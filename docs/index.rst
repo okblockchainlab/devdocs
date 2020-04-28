@@ -48,7 +48,7 @@ Contents
 
 .. toctree::
    :maxdepth: 3
-   :caption: OKChain
+   :caption: Overview
 
    okchain-overview/overview
    okchain-overview/introduction
@@ -148,6 +148,6 @@ Contents
 
 .. toctree::
    :maxdepth: 3
-   :caption: 相关链接
+   :caption: Reference
 
    resource/link
