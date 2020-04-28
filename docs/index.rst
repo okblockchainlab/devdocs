@@ -113,7 +113,7 @@ Contents
    resources/archives
    concepts/general-concepts
    getting-start/genesis
-   fee
+   resources/fee
    concepts/gov
    trade/periodic_auction
    concepts/upgrade-concept
@@ -144,7 +144,7 @@ Contents
    :maxdepth: 3
    :caption: Faq
 
-   faq
+   faq/faq
 
 .. toctree::
    :maxdepth: 3
