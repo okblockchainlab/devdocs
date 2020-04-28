@@ -51,13 +51,13 @@ Contents
    :caption: OKChain
 
    okchain-overview/overview
+   okchain-overview/introduction
+   okchain-overview/what-is-okchain
 
 .. toctree::
    :maxdepth: 3
    :caption: Getting Start
 
-   getting-start/introduction
-   running-a-node/what-is-okchain
    running-a-node/installation
    running-a-node/deploy-testnet
    running-a-node/join-testnet
@@ -67,7 +67,7 @@ Contents
 
 .. toctree::
    :maxdepth: 3
-   :caption: delegators
+   :caption: Delegators
 
    staking-okts/delegator-guide-cli
    staking-okts/delegator-security
@@ -75,7 +75,7 @@ Contents
 
 .. toctree::
    :maxdepth: 3
-   :caption: validators
+   :caption: Validators
 
    validators/overview
    validators/validator-setup
@@ -103,16 +103,18 @@ Contents
    concepts/gov
    trade/periodic_auction
    concepts/upgrade-concept
+   tools/monitor
+   tools/command
 
 .. toctree::
    :maxdepth: 3
-   :caption: 去交易
+   :caption: DEX Users
 
    features/order
 
 .. toctree::
    :maxdepth: 3
-   :caption: 搭建自己的去中心化交易所
+   :caption: DEX Operators
 
    getting-start/ico
    features/dex
@@ -120,7 +122,7 @@ Contents
 
 .. toctree::
    :maxdepth: 3
-   :caption: 命令行客户端
+   :caption: Command Line Tools
 
    getting-start/command/account
    getting-start/command/token
@@ -131,7 +133,7 @@ Contents
 
 .. toctree::
    :maxdepth: 3
-   :caption: API服务
+   :caption: SDK API Reference
 
    api/http
    api/node_rpc
@@ -140,14 +142,7 @@ Contents
 
 .. toctree::
    :maxdepth: 3
-   :caption: 工具
-
-   tools/monitor
-   tools/command
-
-.. toctree::
-   :maxdepth: 3
-   :caption: 常见问题
+   :caption: Faq
 
    faq
 
