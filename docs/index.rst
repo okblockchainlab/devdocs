@@ -148,6 +148,12 @@ Contents
 
 .. toctree::
    :maxdepth: 3
+   :caption: Faq2
+
+   faq/faq
+
+.. toctree::
+   :maxdepth: 3
    :caption: Reference2
 
    resource/link
