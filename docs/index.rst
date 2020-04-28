@@ -150,4 +150,4 @@ Contents
    :maxdepth: 3
    :caption: 相关链接
 
-   link
+   resource/link
