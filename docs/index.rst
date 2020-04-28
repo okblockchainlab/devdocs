@@ -60,36 +60,22 @@ Contents
    running-a-node/what-is-okchain
    running-a-node/installation
    running-a-node/deploy-testnet
-   us-en-new/running-a-node/join-testnet
-   us-en-new/running-a-node/join-mainnet
-   us-en-new/running-a-node/upgrade-node
-   us-en-new/running-a-node/live-upgrade-tutorial
-
-.. _user-docs:
+   running-a-node/join-testnet
+   running-a-node/join-mainnet
+   running-a-node/upgrade-node
+   running-a-node/live-upgrade-tutorial
 
 .. toctree::
    :maxdepth: 3
-   :caption: 委托投票
+   :caption: delegators
 
    staking-okts/delegator-guide-cli
    staking-okts/delegator-security
    staking-okts/delegator-faq
 
-.. _merchant-docs:
-
 .. toctree::
    :maxdepth: 3
-   :caption: 委托投票
-
-   staking-okts/delegator-guide-cli
-   staking-okts/delegator-security
-   staking-okts/delegator-faq
-
-.. _concept-docs:
-
-.. toctree::
-   :maxdepth: 3
-   :caption: 超级节点
+   :caption: validators
 
    validators/overview
    validators/validator-setup
@@ -101,8 +87,6 @@ Contents
    validators/kms/kms
    validators/kms/kms_ledger
 
-.. _func-docs:
-
 .. toctree::
    :maxdepth: 3
    :caption: Resources
@@ -113,15 +97,18 @@ Contents
    resources/ledger
    resources/service-providers
    resources/archives
-
+   concepts/general-concepts
+   getting-start/genesis
+   fee
+   concepts/gov
+   trade/periodic_auction
+   concepts/upgrade-concept
 
 .. toctree::
    :maxdepth: 3
    :caption: 去交易
 
    features/order
-
-.. _cmdClient-docs:
 
 .. toctree::
    :maxdepth: 3
@@ -130,21 +117,6 @@ Contents
    getting-start/ico
    features/dex
    features/backend
-
-.. _api-docs:
-
-.. toctree::
-   :maxdepth: 3
-   :caption: 概念
-
-   concepts/general-concepts
-   getting-start/genesis
-   fee
-   concepts/gov
-   trade/periodic_auction
-   concepts/upgrade-concept
-
-.. _tool-docs:
 
 .. toctree::
    :maxdepth: 3
@@ -157,8 +129,6 @@ Contents
    getting-start/command/backend
    getting-start/command/gov
 
-.. _faq-docs:
-
 .. toctree::
    :maxdepth: 3
    :caption: API服务
@@ -167,8 +137,6 @@ Contents
    api/node_rpc
    api/sdk
    api/msg
-
-.. _link-docs:
 
 .. toctree::
    :maxdepth: 3
