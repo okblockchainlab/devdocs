@@ -67,6 +67,20 @@ Contents
 
 .. toctree::
    :maxdepth: 3
+   :caption: Traders
+
+   features/order
+
+.. toctree::
+   :maxdepth: 3
+   :caption: DEX Operators
+
+   getting-start/ico
+   features/dex
+   features/backend
+
+.. toctree::
+   :maxdepth: 3
    :caption: Delegators
 
    staking-okts/delegator-guide-cli
@@ -86,20 +100,6 @@ Contents
    validators/validator-faq
    validators/kms/kms
    validators/kms/kms_ledger
-
-.. toctree::
-   :maxdepth: 3
-   :caption: DEX Users
-
-   features/order
-
-.. toctree::
-   :maxdepth: 3
-   :caption: DEX Operators
-
-   getting-start/ico
-   features/dex
-   features/backend
 
 .. toctree::
    :maxdepth: 3
