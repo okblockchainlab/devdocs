@@ -89,6 +89,20 @@ Contents
 
 .. toctree::
    :maxdepth: 3
+   :caption: DEX Users
+
+   features/order
+
+.. toctree::
+   :maxdepth: 3
+   :caption: DEX Operators
+
+   getting-start/ico
+   features/dex
+   features/backend
+
+.. toctree::
+   :maxdepth: 3
    :caption: Resources
 
    resources/genesis
@@ -105,20 +119,6 @@ Contents
    concepts/upgrade-concept
    tools/monitor
    tools/command
-
-.. toctree::
-   :maxdepth: 3
-   :caption: DEX Users
-
-   features/order
-
-.. toctree::
-   :maxdepth: 3
-   :caption: DEX Operators
-
-   getting-start/ico
-   features/dex
-   features/backend
 
 .. toctree::
    :maxdepth: 3
