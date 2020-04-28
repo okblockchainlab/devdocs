@@ -133,7 +133,7 @@ Contents
 
 .. toctree::
    :maxdepth: 3
-   :caption: SDK API Reference
+   :caption: SDK API
 
    api/http
    api/node_rpc
