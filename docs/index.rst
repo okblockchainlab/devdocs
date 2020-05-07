@@ -63,20 +63,6 @@ Contents
 
 .. toctree::
    :maxdepth: 3
-   :caption: Traders
-
-   features/order
-
-.. toctree::
-   :maxdepth: 3
-   :caption: DEX Operators
-
-   getting-start/ico
-   features/dex
-   features/backend
-
-.. toctree::
-   :maxdepth: 3
    :caption: Delegators
 
    delegators/delegators-overview
