@@ -48,22 +48,18 @@ Contents
 
 .. toctree::
    :maxdepth: 3
-   :caption: Overview
+   :caption: OKChain
 
-   okchain-overview/overview
-   okchain-overview/introduction
-   okchain-overview/what-is-okchain
+   okchain/overview
 
 .. toctree::
    :maxdepth: 3
    :caption: Getting Start
 
-   running-a-node/installation
-   running-a-node/deploy-testnet
-   running-a-node/join-testnet
-   running-a-node/join-mainnet
-   running-a-node/upgrade-node
-   running-a-node/live-upgrade-tutorial
+   gitting-start/install-okchain
+   gitting-start/deploy-you-own-okchain-testnet
+   gitting-start/join-okchain-testnet
+   gitting-start/join-okchain-mainnet
 
 .. toctree::
    :maxdepth: 3
@@ -83,23 +79,44 @@ Contents
    :maxdepth: 3
    :caption: Delegators
 
-   staking-okts/delegator-guide-cli
-   staking-okts/delegator-security
-   staking-okts/delegator-faq
+   delegators/delegators-overview
+   delegators/delegators-guide-cli
+   delegators/delegators-faq
 
 .. toctree::
    :maxdepth: 3
    :caption: Validators
 
-   validators/overview
-   validators/validator-setup
-   validators/security
-   validators/sentry-nodes
-   validators/distribution
-   validators/slashing
-   validators/validator-faq
-   validators/kms/kms
-   validators/kms/kms_ledger
+   validators/validators-overview
+   validators/validators-guide-cli
+   validators/validators-faq
+
+.. toctree::
+   :maxdepth: 3
+   :caption: DEX Traders
+
+   dex-trades/dex-trades-overview
+   dex-trades/dex-trades-guide-cli
+   dex-trades/dex-trades-faq
+
+.. toctree::
+   :maxdepth: 3
+   :caption: DEX Operators
+
+   dex-operators/dex-operators-overview
+   dex-operators/dex-operators-guide-cli
+   dex-operators/dex-operators-faq
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Concepts
+
+   concepts/general-concepts
+   concepts/fee
+   concepts/gov
+   concepts/periodic_auction
+   concepts/upgrade-concept
+
 
 .. toctree::
    :maxdepth: 3
@@ -107,49 +124,27 @@ Contents
 
    resources/genesis
    resources/okchaincli
-   resources/hd-wallets
-   resources/ledger
    resources/service-providers
    resources/archives
-   concepts/general-concepts
-   getting-start/genesis
-   resources/fee
-   concepts/gov
-   trade/periodic_auction
-   concepts/upgrade-concept
+
+.. toctree::
+   :maxdepth: 3
+   :caption: API
+
+   api/http
+   api/sdk
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Tools
+
    tools/monitor
    tools/command
 
 .. toctree::
    :maxdepth: 3
-   :caption: Command Line Tools
+   :caption: References
 
-   getting-start/command/account
-   getting-start/command/token
-   getting-start/command/send
-   getting-start/command/order
-   getting-start/command/backend
-   getting-start/command/gov
-
-.. toctree::
-   :maxdepth: 3
-   :caption: SDK API
-
-   api/http
-   api/node_rpc
-   api/sdk
-   api/msg
-
-.. toctree::
-   :maxdepth: 3
-   :caption: Faq
-
-   faq/faq
-
-.. toctree::
-   :maxdepth: 3
-   :caption: Reference
-
-   resources/link
+   link
 
 
