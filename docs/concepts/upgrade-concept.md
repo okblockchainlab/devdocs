@@ -1,22 +1,22 @@
-# 升级流程
+# Upgrade process
 
-## 升级提案流程
+## Upgrade proposal process
 
-![](../../img/upgrade-diagram.png)
+![](../img/upgrade-diagram.png)
 
-说明：
-app升级相较于传统的硬分叉来说，是一种更为平滑更具容错性的系统升级方式。这里的app是指运行在tendermint共识层上面的OKChain软件。当实际完成app版本更新并重新运行新版本的validator节点`voting power`低于一定的阈值时，新版本app可以继续以旧版本逻辑运行，相当于整个出块网络保持在旧版本，不会导致网络分叉；当运行新版本的validator节点`voting power`达到阈值时，新版本app逻辑将会在指定高度进行切换，整个出块网络将使用新版本逻辑运行。
+Description:
+Compared with the traditional hard fork, app upgrade is a smoother and more fault-tolerant system upgrade method. The app here refers to the OKChain software running on the tendermint consensus layer. When the app version update is completed and the new validation node’s “voting power” is lower than a certain threshold, the new app can continue to run based on the logic of its old version in the same situation where the entire block network remains in the old version, which will not result in network fork; when the new validation node’s “voting power” reaches the threshold, the logic of its new version will swap at a specified height, and the entire block network will run using such logic.
 
-## 参考
-提案相关参数说明：
-```sh
-- title表示app升级提案的标题
-- description表示app升级提案的详情描述
-- deposit表示当前提案抵押的Token数量
-- version指定当前提案包括的app新版本号
-- software表示当前提案包括的app新版本下载地址
-- switchHeight表示当前提案包括的app新版本切换块高
-- threshold表示当前提案包括的`voting power`阈值
-- type指定当前提案为app升级提案
-- from指定当前提案发起人账户，这里为alice
+## Reference
+proposal parameters:
+```
+- title indicates the title of the app upgrade proposal
+- description indicates a detailed description of the app upgrade proposal
+- deposit indicates the number of tokens desposited by the current proposal
+- version indicates the new version number of the app included in the current proposal
+- software indicates the download address of the app of the new version included in the current proposal
+- switchHeight indicates the swap block height of the app of the new version included in the current proposal
+- threshold indicates the threshold for 'voting power' included in the current proposal
+- type specifies the current proposal as an app upgrade proposal
+- from indicates the current proposal's initiator account, alice
 ```

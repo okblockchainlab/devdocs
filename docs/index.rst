@@ -56,10 +56,10 @@ Contents
    :maxdepth: 3
    :caption: Getting Start
 
-   gitting-start/install-okchain
-   gitting-start/deploy-you-own-okchain-testnet
-   gitting-start/join-okchain-testnet
-   gitting-start/join-okchain-mainnet
+   getting-start/install-okchain
+   getting-start/deploy-you-own-okchain-testnet
+   getting-start/join-okchain-testnet
+   getting-start/join-okchain-mainnet
 
 .. toctree::
    :maxdepth: 3

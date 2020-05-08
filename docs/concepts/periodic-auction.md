@@ -1,72 +1,69 @@
-# 撮合系统
+# Matching System
 
-## 背景
+# Order Matching System
+
+## Background
 
 
-DEX撮合系统采用的是集合竞价模型。由于在区块链系统中，订单不是连续产生的，而是按出块时间间隔离散地产生，
-因而DEX不像大多数中心化交易所对订单采用连续竞价算法，而是按照出块时间间隔，
-周期性地以集中竞价的方式对订单进行撮合。
+DEX’s matching system adopts a call auction mechanism. Since, in the blockchain system, orders are not continuously placed but are sorted in the sequence of block generation time, DEX, unlike most centralized exchanges, does not use a continuous auction algorithm to deal with orders. Instead, it matches orders periodically based on block generation intervals and by way of call auction.
 
-每个区块采用集合竞价的方式，保证一个数字资产交易对在一个区块内只会有一个成交价，成交时按"价格优先，时间优先"的顺序成交，
-可以大大弱化交易在区块内的排序对最终撮合结果的影响，增加矿工预先交易的难度，并减少矿工预先交易带来的收益，
-从而保证交易的公平性。
+Each block adopts the call auction approach to ensure that a trading pair only has one traded price in a block. After transactions are completed, they are executed in price and time priority. This helps greatly minimize the impact of the ordering of transactions within the block on the final matching results, increase the difficulty in front running by miners and reduce the yields of miners during front running, so as to ensure trading fairness.
 
-## 撮合流程
+## Matching process
 
-![match](../../img/match.png)
+![match](../img/match.png)
 
-## 基准价格选取算法
+## Benchmark price selection algorithm
 
-* 规则0：最佳出价<最佳询价，无可成交订单，不撮合；
+* Rule 0: Best bid < best ask, no order can be executed so that there is no matching.
 
-* 规则1：最大成交量原则。以基准价格成交时，可以获得最大的成交量，如果多个价格都能满足最大成交量，则进入下一步；
+* Rule 1: Maximum volume principle. When a transaction is executed at the benchmark price, the maximum traded volume is reached. If multiple prices can reach the maximum volume, proceed to the next step.
 
-* 规则2：最小过剩原则。过剩指的是当前价位的累计买单总量与累计卖单总量之差。最小过剩原则，指的是从满足规则1的价格中选取过剩值的绝对值最小的价格。如果满足此规则的价格有多个，则进入下一步。
+* Rule 2: Minimum excess principle. Excess refers to the difference between the total cumulative number of buy orders and the total cumulative number of sell orders at the current price. The minimum excess principle means that the lowest absolute excess value is selected from the prices satisfying Rule 1. If there are multiple prices that satisfy the rule, proceed to the next step.
 
-* 规则3：市场压力原则。同时满足规则1和规则2的价格有多个时（最大值为max，最小值为min）。则需要确定潜在价格的市场压力的位置。过剩全为正号，表示买多卖少，为买方压力；过剩全为负号，表示买少卖多，为卖方压力；过剩有正有负，则无明显买卖方压力。
-按以下规则确定参考价（ref）。如果ref在\[min, max\]区间内，则选取ref作为基准价格；如果ref在\[min, max\]区间外，则选取最接近ref的min或者max作为基准价格。
+* Rule 3: Market pressure principle. If there are multiple prices that satisfy both Rule 1 and Rule 2 (the maximum value refers to max and the minimum value refers to min), you need to determine the positions of market pressure on potential prices. If the excess values are all positive, this means buying more and selling less and there is buying pressure; if the excess values are all negative, this means buying less and selling more and there is selling pressure; if there are both positive and negative excess values, which means there is no obvious buying or selling pressure.
+Determine the reference price (ref) according to the following rules. If ref is within the range of \[min, max\], ref is taken as the reference price; if ref is beyond the range of \[min, max\], the min or max closest to ref is taken as the reference price.
     
-    * 规则3a：如果过剩全为正数，买方压力。以上次成交价的105%作为参考价。
+    * Rule 3a: If the excess values are all positive, there is buyer pressure. 105% X the previous traded price is taken as the reference price.
     
-    * 规则3b：如果过剩全为负数，卖方压力。以上次成交价的95%作为参考价。
+    * Rule 3b: If the excess values are all negative, there is seller pressure. 95% X the latest traded price is taken as the reference price.
     
-    * 规则3c：如果过剩有正有负，则无明显买卖方压力。以最近成交价作为参考价。
+    * Rule 3c: If there are positive and negative excess values, there is no obvious buying or selling pressure. Take the latest traded price as the reference price.
 
-![matchPrice](../../img/matchPrice.png)
+![matchPrice](../img/matchPrice.png)
 
-## 以基准价格作为成交价撮合
-
-
-所有的买委托按照委托限价由高到低的顺序排列，所有的卖委托按照委托限价由低到高的顺序排列，
-价格相同的委托按时间（区块高度，区块内tx顺序）先后排序，时间较早的订单排在前面。
-
-基准价格选定之后，按照最大成交量，依序逐笔将排在前面的买委托与卖委托成交，即按照 “价格优先，同等价格下时间优先”的成交顺序
-依次成交，直至完成最大成交量。所有成交都以同一基准价格成交。
+## Take benchmark prices as traded prices for matching
 
 
-## 基准价格算法示例
+All bid orders are sorted in descending order of limit prices, and all ask orders are sorted in ascending order of limit prices. Orders at the same price are sorted by time (block height and tx sequence within the block) and orders at earlier time are listed first.
+
+After the benchmark price is selected, bid and ask orders listed first are executed one by one in order of the maximum traded volumes, i.e. orders are executed in price and time priority until they are fully filled. All orders are executed at the same benchmark price.
 
 
-选取的基准价格用*表示。
-
-可成交量=MIN(累计卖单量,累计买单量)
-
-未成交量（过剩）=累计买单量-累计卖单量
-
-以下案例的价格最小精度均为0.1。
+## Example of benchmark price algorithm
 
 
-示例1：最大成交量原则（规则1）
+The selected benchmark price is indicated by *.
 
-| 累计卖单量 | 申报卖单量 | 申报价格 | 申报买单量 | 累计买单量 | 可成交量 | 未成交量 |
+tradable volume = MIN (cumulative number of sell orders, cumulative number of buy orders)
+
+untraded volume (excess) = cumulative number of buy orders - cumulative number of sell orders
+
+In the following cases, the minimum price unit is 0.1.
+
+
+Example 1: Maximum volume principle (Rule 1)
+
+
+| Cumulative number of sell orders | Reported number of sell orders | Reported price | Reported number of buy orders | Cumulative number of buy orders | tradable volume | untraded volume |
 |------------|------------|----------|------------|------------|----------|----------|
 | 3          |            | 1.0      | 2          | 2          | 2        |          |
 | 3          | 2          | 0.8*     | 2          | 4          | 3        |          |
 | 1          | 1          | 0.7      |            | 4          | 1        |          |
 
-示例2：最小过剩原则（规则2）
+Example 2: Minimum excess principle (Rule 2)
 
-| 累计卖单量 | 申报卖单量 | 申报价格 | 申报买单量 | 累计买单量 | 可成交量 | 未成交量 |
+| Cumulative number of sell orders | Reported number of sell orders | Reported price | Reported number of buy orders | Cumulative number of buy orders | tradable volume | untraded volume |
 |------------|------------|----------|------------|------------|----------|----------|
 | 12         |            | 1.2      | 2          | 2          | 2        |          |
 | 12         |            | 1.1      | 2          | 4          | 4        |          |
@@ -76,51 +73,52 @@ DEX撮合系统采用的是集合竞价模型。由于在区块链系统中，�
 | 5          |            | 0.6      | 2          | 11         | 5        |          |
 | 5          | 5          | 0.5      |            | 11         | 5        |          |
 
-示例3：市场压力原则。买方压力（规则3a）。最近成交价10.0，参考价为10.0*1.05=10.5。基准价为10.4
+Example 3: Market pressure principle. Buying pressure (Rule 3a). The latest traded price is 10.0. The reference price is 10.0 * 1.05 = 10.5. The benchmark price is 10.4.
 
-| 累计卖单量 | 申报卖单量 | 申报价格 | 申报买单量 | 累计买单量 | 可成交量 | 未成交量 |
+
+| Cumulative number of sell orders | Reported number of sell orders | Reported price | Reported number of buy orders | Cumulative number of buy orders | tradable volume | untraded volume |
 |------------|------------|----------|------------|------------|----------|----------|
 | 5          |            | 10.4*    | 6          | 6          | 5        | 1        |
 | 5          | 3          | 10.3     |            | 6          | 5        | 1        |
 | 2          | 2          | 9.9      |            | 6          | 2        |          |
 
-示例4：市场压力原则。买方压力（规则3a）。最近成交价10.0，参考价为10.0*1.05=10.5。基准价为10.5
+Example 4: Market pressure principle. Buying pressure (Rule 3a). The latest traded price is 10.0. The reference price is 10.0 * 1.05 = 10.5. The benchmark price is 10.5.
 
-| 累计卖单量 | 申报卖单量 | 申报价格 | 申报买单量 | 累计买单量 | 可成交量 | 未成交量 |
+| Cumulative number of sell orders | Reported number of sell orders | Reported price | Reported number of buy orders | Cumulative number of buy orders | tradable volume | untraded volume |
 |------------|------------|----------|------------|------------|----------|----------|
 | 5          |            | 10.8     | 6          | 6          | 5        | 1        |
 | 5          | 3          | 10.3     |            | 6          | 5        | 1        |
 | 2          | 2          | 9.9      |            | 6          | 2        |          |
 
 
-示例5：市场压力原则。卖方压力（规则3b）。最近成交价10.0，参考价为10.0*0.95=9.5。基准价为9.6
+Example 5: Market pressure principle. Selling pressure (Rule 3b). The latest traded price is 10.0. The reference price is 10.0 * 0.95 = 9.5. The benchmark price is 9.6.
 
-| 累计卖单量 | 申报卖单量 | 申报价格 | 申报买单量 | 累计买单量 | 可成交量 | 未成交量 |
+| Cumulative number of sell orders | Reported number of sell orders | Reported price | Reported number of buy orders | Cumulative number of buy orders | tradable volume | untraded volume |
 |------------|------------|----------|------------|------------|----------|----------|
 | 6          |            | 10.1     | 2          | 2          | 2        |          |
 | 6          |            | 9.7      | 3          | 5          | 5        | -1       |
 | 6          | 6          | 9.6*     |            | 5          | 5        | -1       |
 
-示例6：市场压力原则。卖方压力（规则3b）。最近成交价10.0，参考价为10.0*0.95=9.5。基准价为9.5
+Example 6: Market pressure principle. Selling pressure (Rule 3b). The latest traded price is 10.0. The reference price is 10.0 * 0.95 = 9.5. The benchmark price is 9.5.
 
-| 累计卖单量 | 申报卖单量 | 申报价格 | 申报买单量 | 累计买单量 | 可成交量 | 未成交量 |
+| Cumulative number of sell orders | Reported number of sell orders | Reported price | Reported number of buy orders | Cumulative number of buy orders | tradable volume | untraded volume |
 |------------|------------|----------|------------|------------|----------|----------|
 | 6          |            | 10.1     | 2          | 2          | 2        |          |
 | 6          |            | 9.7      | 3          | 5          | 5        | -1       |
 | 6          | 6          | 9.4      |            | 5          | 5        | -1       |
 
-示例7：市场压力原则。无明显买卖方压力（规则3c）。最近成交价10.0，参考价10.0，基准价为10.0
+Example 7: Market pressure principle. There is no obvious buying or selling pressure (Rule 3c). The latest traded price is 10.0. The reference price is 10.0. The benchmark price is 10.0.
 
-| 累计卖单量 | 申报卖单量 | 申报价格 | 申报买单量 | 累计买单量 | 可成交量 | 未成交量 |
+| Cumulative number of sell orders | Reported number of sell orders | Reported price | Reported number of buy orders | Cumulative number of buy orders | tradable volume | untraded volume |
 |------------|------------|----------|------------|------------|----------|----------|
 | 5          |            | 10.2     | 2          | 2          | 5        | -3       |
 | 5          | 3          | 10.0*    |            | 2          | 5        | -3       |
 | 2          |            | 9.8      | 3          | 5          | 5        | 3        |
 | 2          | 2          | 9.4      |            | 5          | 5        | 3        |
 
-示例7：市场压力原则。无明显买卖方压力（规则3c）。最近成交价10.5，参考价10.5，基准价为10.2
+Example 7: Market pressure principle. There is no obvious buying or selling pressure (Rule 3c). The latest traded price is 10.5. The reference price is 10.5. The benchmark price is 10.2.
 
-| 累计卖单量 | 申报卖单量 | 申报价格 | 申报买单量 | 累计买单量 | 可成交量 | 未成交量 |
+| Cumulative number of sell orders | Reported number of sell orders | Reported price | Reported number of buy orders | Cumulative number of buy orders | tradable volume | untraded volume |
 |------------|------------|----------|------------|------------|----------|----------|
 | 5          |            | 10.2*    | 2          | 2          | 5        | -3       |
 | 5          | 3          | 10.0     |            | 2          | 5        | -3       |

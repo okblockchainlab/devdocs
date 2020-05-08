@@ -1,70 +1,61 @@
-# 链上治理
+# On-chain governance
 
-## 提案流程
+## Proposal process
 
-关于一个提案从发起到结束的流程如下图所示：   
-![](../../img/OKChainProposal.png)   
-说明：   
-1. 为防止恶意发起提案，发起者在发起提案时需要抵押okt。   
-2. 投票参与者为bond okt的持有者，除以下两种情况外：   
-&emsp;&emsp;a. 进入vote_period后bond/unbond到验证者的okt持有者   
-&emsp;&emsp;b. 进入vote_period后成为验证者的okt持有者。   
-3. 投票的权重取决于bond的okt数量。   
-4. 为了防止双重投票：   
-&emsp;&emsp;a. voting period要小于unbond_period。voting period的初始值为72h（可以根据不同类型提案调整voting period）。   
-&emsp;&emsp;b. 如果委托者在其委托的验证者投票前投票，则该验证者投票权重不包含委托者bond的okt权重。   
-&emsp;&emsp;c. 如果委托者在其委托的验证者投票后进行投票，其投票结果所占权重将覆盖验证者替委托者投票的权重。   
+The overall process of a proposal is shown below:
+![](../img/OKChainProposal.png)   
+Details:  
+1. The proposer should pledge okt when initiating a proposal to prevent malicious initiation of a proposal.
+2. The voting participants are bond okt holders, except for the following two cases:
+&emsp;&emsp;a. the okt holder bond/unbond to proposer after entering vote_period
+&emsp;&emsp;b. the okt holder becomes proposer after entering vote_period
+3. The weight of the vote depends on the number of okts in the bond.
+4. To prevent duplicate voting:
+&emsp;&emsp;a. the voting period is smaller than unbond_period. The minimum length of the voting period is 72h (adjustable depending on the type of proposals) .
+&emsp;&emsp;b. if the delegator votes before the proposer votes on his behalf, the weight of the proposer's vote does not include the weight of okt in his bond.  
+&emsp;&emsp;c. if the delegator votes after the proposer votes on his behalf, the weight of the voting result replaces the weight of the vote cast by the proposer on behalf of the delegator.
 
-## 提案类型
-针对不同用途，OKChain提供以下4种提案类型：   
-1. [Text提案（Text Proposal）](../governance/text.md)：用于获取某个topic网络意见。   
-2. [参数修改提案（Parameter Proposal）](../governance/parameter.md)：用于修改系统参数。   
-3. [数字资产交易对申请提案（DexList Proposal）](../governance/dexlist.md)：用于项目方数字资产交易对申请。   
-4. [版本升级提案（Software Upgrade Proposal）](../governance/upgrade.md)：用于进行全网升级操作。   
+## Proposal types
+OKChain offers 4 types of proposals for different purposes: 
+1. [Text Proposal](../governance/text.md)： to obtain network views of a topic.
+2. [Parameter Proposal](../governance/parameter.md)： to change system parameters. 
+3. [Software Upgrade Proposal](../governance/upgrade.md)： to support whole network upgrade.
 
-除了Text提案外，提案均由发起，抵押阶段（deposit_period），投票阶段（vote_period）和执行阶段组成，Text提案则没有执行阶段。
+Except for text proposals, there are four proposal stages, including initiation, deposit_period, vote_period and execution. Execution is not a text proposal's stage.
 
-## 提案投票统计
-![](../../img/gov-tally.png) 
-图中变量含义：   
-1.totalBonded：表示全网可参与投票的Bonded的okt总和   
-2.totalVotingPower：表示参与投票的Bonded的okt总和   
+## Proposal voting statistics
+![](../img/gov-tally.png) 
+Meanings of variables:   
+1.totalBonded： the sum of bonded okt that can vote on the entire network
+2.totalVotingPower： the sum of bonded okt that participate in voting
 3.percentVoting = totalVotingPower / totalBonded   
-4.Quorum：参与投票的权重占比阈值(0.334)   
-5.Threshold：投Yes票在所有投非弃权票中的比重阈值(0.5)   
-6.Veto：投NoWithVeto票在所有投票中的比重阈值(0.334)   
-7.YesInVotePeriod：在投票结束前投Yes票占totalBonded比重阈值(0.667)   
-8.Yes：表示投Yes票的Bonded的okt总和   
-9.No：表示投No票的Bonded的okt总和   
-10.NoWithVeto：表示投NoWithVeto票的Bonded的okt总和   
-11.Abstain：表示投Abstain票的Bonded的okt总和 
+4.Quorum： voting weight threshold for participating voters (0.334)
+5.Threshold： weight threshold for the proportion of Yes votes to all non-abstained votes (0.5)
+6.Veto： weight threshold for the proportion of NoWithVeto votes to all votes (0.334)
+7.YesInVotePeriod： weight threshold for the proportion of Yes votes to totalBonded before the voting ends (0.667)
+8.Yes： the sum of bonded okt voting Yes
+9.No： the sum of bonded okt voting No
+10.NoWithVeto： the sum of bonded okt voting NoWithVeto
+11.Abstain： the sum of bonded okt voting Abstain
 
-## 提案相关参数
-Text提案参数：  
-&emsp;&emsp;抵押周期(`TextMaxDepositPeriod`): 24h   
-&emsp;&emsp;抵押额度(`TextMinDeposit`): 100okt  
-&emsp;&emsp;投票周期(`TextVotingPeriod`): 72h   
-参数修改提案参数：   
-&emsp;&emsp;抵押周期(`ParamChangeMaxDepositPeriod`): 24h   
-&emsp;&emsp;抵押额度(`ParamChangeMinDeposit`): 100okt  
-&emsp;&emsp;投票周期(`ParamChangeVotingPeriod`): 72h   
-&emsp;&emsp;参数修改生效块高(`ParamChangeMaxBlockHeight`)：100000    
-版本升级提案参数：   
-&emsp;&emsp;抵押周期(`AppUpgradeMaxDepositPeriod`): 24h   
-&emsp;&emsp;抵押额度(`AppUpgradeMinDeposit`): 100okt   
-&emsp;&emsp;投票周期(`AppUpgradeVotingPeriod`): 72h   
-数字资产交易对申请提案参数：    
-&emsp;&emsp;抵押周期(`DexListMaxDepositPeriod`): 24h   
-&emsp;&emsp;抵押额度(`DexListMinDeposit`): 20000okt   
-&emsp;&emsp;投票周期(`DexListVotingPeriod`): 72h   
-&emsp;&emsp;投票费用(`DexListVoteFee`): 0okt  
-&emsp;&emsp;自动数字资产交易对申请指定的最大块高(`DexListMaxBlockHeight`): 10000   
-&emsp;&emsp;数字资产交易对激活费用(`DexListFee`): 100000okt   
-&emsp;&emsp;数字资产交易对激活到期时间(`DexListExpireTime`): 数字资产交易对申请提案通过后24h内激活否则提案失效     
-所有提案的投票统计参数：   
-&emsp;&emsp;参与投票的权重占比阈值(`Quorum`)：0.334   
-&emsp;&emsp;投Yes票在所有投非弃权票中的比重阈值(`Threshold`)：0.5   
-&emsp;&emsp;NoWithVeto票在所有投票中的比重阈值(`Veto`)：0.334  
-&emsp;&emsp;在投票结束前投Yes票在所有投票中（包含已投和未投）比重阈值(`YesInVotePeriod`)：0.667
+## Proposal parameters
+text proposal parameters  
+&emsp;&emsp;deposit period(`TextMaxDepositPeriod`): 24h   
+&emsp;&emsp;minimum deposit(`TextMinDeposit`): 100okt  
+&emsp;&emsp;voting period(`TextVotingPeriod`): 72h   
+parameter proposal parameters   
+&emsp;&emsp;deposit period(`ParamChangeMaxDepositPeriod`): 24h   
+&emsp;&emsp;minimum deposit(`ParamChangeMinDeposit`): 100okt  
+&emsp;&emsp;voting period(`ParamChangeVotingPeriod`): 72h   
+&emsp;&emsp;maximum block height(`ParamChangeMaxBlockHeight`)：100000    
+software upgrade proposal parameters
+&emsp;&emsp;deposit period(`AppUpgradeMaxDepositPeriod`): 24h   
+&emsp;&emsp;minimum deposit(`AppUpgradeMinDeposit`): 100okt   
+&emsp;&emsp;voting period(`AppUpgradeVotingPeriod`): 72h   
+voting parameters of all proposals:
+&emsp;&emsp;voting weight threshold for participating voters (`Quorum`)：0.334   
+&emsp;&emsp;weight threshold for the proportion of Yes votes to all non-abstained votes (`Threshold`)：0.5   
+&emsp;&emsp;weight threshold for the proportion of NoWithVeto votes to all votes (`Veto`)：0.334  
+&emsp;&emsp;weight threshold for the proportion of Yes votes to all votes (including the voted and unvoted) before the voting ends (`YesInVotePeriod`)：0.667
 
-详细信息请参阅[提案参数](../governance/parameter.md#id1)
+Refer to [Proposal parameter](../governance/parameter.html#id1) for details
