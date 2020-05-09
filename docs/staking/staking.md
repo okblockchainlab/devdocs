@@ -96,14 +96,14 @@ okchaincli tx staking redelegate okchainvaloper1005qzgwplwu8hf9pjhhtlm0t2x27hypp
 
 *  重新委托交易的src validator为下一周期的出块节点，则该交易将被延迟至下下周期执行，最早执行时间为下下周期第一个块高，最晚执行时间为下下周期倒数第二个块高；具有相同src validator的重新委托交易会覆盖延迟中的交易，仅执行最新的重新委托交易；
 
-![bonded validator](../../img/red1.png)
+![bonded validator](../img/red1.png)
 
 
 *  重新委托交易的src validator为退出出块节点集合的节点，则该交易将被延迟至下周期第一个块高执行；
 
-![unbonding validator](../../img/red2.png)
+![unbonding validator](../img/red2.png)
 
 
 *  重新委托交易的src validator不在下一周期的出块节点集合内，同时也不为退出出块节点集合的节点，则该交易即时执行。
 
-![unbonded validator](../../img/red3.png)
+![unbonded validator](../img/red3.png)

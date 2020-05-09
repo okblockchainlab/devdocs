@@ -23,8 +23,34 @@ First, set up the address of the full-node you want to connect to:
 ```bash
 okchaincli config node <host>:<port>
 
-# example: okchaincli config node https://77.87.106.33:26657
+# example: okchaincli config node https://3.13.150.20:26657
 ```
+
+Or any of the following address ports:
+```
+3.13.150.20:26657
+35.176.111.229:26657
+18.162.106.25:26657
+18.220.143.90:26657
+3.9.253.24:26657
+18.162.205.49:26657
+18.162.215.44:26657
+18.162.217.121:26657
+18.162.217.91:26657
+13.209.159.23:26657
+15.164.112.129:26657
+18.197.242.177:26657
+3.120.127.153:26657
+18.139.28.11:26657
+18.139.57.190:26657
+18.140.23.247:26657
+13.113.155.133:26657
+13.115.176.62:26657
+18.179.82.0:26657
+34.210.189.230:26657
+52.41.56.82:26657
+```
+
 
 If you run your own full-node, just use `tcp://localhost:26657` as the address.
 
@@ -39,8 +65,15 @@ okchaincli config trust-node true
 Finally, let us set the `chain-id` of the blockchain we want to interact with:
 
 ```bash
-okchaincli config chain-id cosmoshub-2
+okchaincli config chain-id okchain
 ```
+
+Set the output format of okchaincli request response
+```bash
+okchaincli config output json    
+okchaincli config indent true
+```
+
 
 ### Keys
 
