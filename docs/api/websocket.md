@@ -110,11 +110,11 @@ token是`<s, token_id, t1, t2, pub>`，认证过程以及详细流程如图所�
 
 - 认证过程
 
-![](../../img/authentication.png)
+![](../img/authentication.png)
 
 - 详细流程：
 
-![](../../img/detail.png)
+![](../img/detail.png)
 
 
 **6、校验机制**

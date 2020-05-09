@@ -1,5 +1,5 @@
 
-![text](../../img/gov-parameter.png)
+![text](../img/gov-parameter.png)
 
 说明：
 
