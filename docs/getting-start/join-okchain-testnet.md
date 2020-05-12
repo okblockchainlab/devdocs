@@ -20,8 +20,8 @@ of OKChain to use and details about the genesis file.
 
 To start a new node, the mainnet instructions apply:
 
-- [Join the mainnet](./join-mainnet.md)
-- [Deploy a validator](../validators/validator-setup.md)
+- [Join the mainnet](./join-okchain-mainnet.md)
+- [Deploy a validator](../validators/validators-guide-cli.md)
 
 The only difference is the SDK version and genesis file. See the [testnet repo](https://github.com/cosmos/testnets) for information on testnets, including the correct version of the OKChain-SDK to use and details about the genesis file.
 

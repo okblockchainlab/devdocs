@@ -6,8 +6,8 @@ order: 2
 
 This guide will explain how to install the `okchaind` and `okchaincli` entrypoints
 onto your system. With these installed on a server, you can participate in the
-mainnet as either a [Full Node](./join-mainnet.md) or a
-[Validator](../validators/validator-setup.md).
+mainnet as either a [Full Node](./join-okchain-mainnet.md) or a
+[Validator](../validators/validators-guide-cli.md).
 
 ## Install Go
 

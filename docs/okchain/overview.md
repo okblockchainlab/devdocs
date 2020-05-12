@@ -57,7 +57,7 @@ These block explorers allow you to search, view and analyze OKChain data&mdash;l
 
 In order to run a full-node for the OKChain mainnet, you must first [install `okchaind`](../okchain-tutorials/installation.md). Then, follow [the guide](../okchain-tutorials/join-mainnet.md).
 
-If you are looking to run a validator node, follow the [validator setup guide](../validators/validator-setup.md).
+If you are looking to run a validator node, follow the [validator setup guide](../validators/validators-guide-cli.md).
 
 ## Join the Community
 

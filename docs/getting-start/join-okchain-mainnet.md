@@ -11,7 +11,7 @@ of the OKChain-SDK to use and details about the genesis file.
 :::
 
 ::: warning
-**You need to [install okchain](./installation.md) before you go further**
+**You need to [install okchain](./install-okchain.md) before you go further**
 :::
 
 ## Setting Up a New Node
@@ -66,7 +66,7 @@ curl https://raw.githubusercontent.com/cosmos/launch/master/genesis.json > $HOME
 Note we use the `latest` directory in the [launch repo](https://github.com/cosmos/launch) which contains details for the mainnet like the latest version and the genesis file. 
 
 ::: tip
-If you want to connect to the public testnet instead, click [here](./join-testnet.md)
+If you want to connect to the public testnet instead, click [here](./join-okchain-testnet.md)
 :::
 
 To verify the correctness of the configuration run:
@@ -195,4 +195,4 @@ deducted as the blockchain will halt (aka. this is a free transaction).
 
 ## Upgrade to Validator Node
 
-You now have an active full node. What's the next step? You can upgrade your full node to become a OKChain Validator. The top 100 validators have the ability to propose new blocks to the OKChain. Continue onto [the Validator Setup](../validators/validator-setup.md).
+You now have an active full node. What's the next step? You can upgrade your full node to become a OKChain Validator. The top 100 validators have the ability to propose new blocks to the OKChain. Continue onto [the Validator Setup](../validators/validators-guide-cli.md).

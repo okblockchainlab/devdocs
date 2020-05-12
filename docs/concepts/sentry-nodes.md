@@ -2,34 +2,35 @@
 order: 3
 --->
 
-# 哨兵节点
+# Sentry node
 
-验证人节点需要确保网络可以承受拒绝服务攻击（DDoS）。
+Validation nodes need to ensure that the network can withstand distributed denial-of-service (DDoS) attacks.
 
-减轻这些风险的一种推荐方法是，使用哨兵节点构建可以保护验证人节点的网络拓扑。
+A recommended way to mitigate such risks is to use sentry nodes to build a network topology that can protect validation nodes.
 
-验证人节点应该只连接到他们信任的全节点，比如他们自己维护的全节点或在社区结识的其他验证人运行的节点。验证人节点通常将在数据中心中运行。大多数数据中心都提供与云服务商直连的网络。验证人节点可以通过这样的网络连接到云中的哨兵节点。这将 DDoS 的负担从验证人节点直接转移到其哨兵节点，并且可能需要在受到攻击时，启动或激活新的哨兵节点以降低攻击带来的影响。
+Validation nodes should only be connected to full nodes they trust, such as full nodes maintained by themselves or nodes run by other validators known in the community. Validation nodes will typically run in data centres. Most data centres provide networks that are directly connected to cloud service providers. Validation nodes can connect to sentry nodes on the cloud through such networks. This shifts the burden of DDoS attacks directly from validation nodes to their sentry nodes, and it may be necessary to start or activate new sentry nodes to reduce the impact of such attacks when necessary.
 
-哨兵节点可以快速启动或更改其IP地址。由于验证人节点到哨兵节点的链接位于私有IP空间中，因此黑客无法通过网络直接攻击到验证人节点。这将确保验证人节点的区块提议和投票始终能够通过哨兵节点正常的广播。
+Sentry nodes can quickly start or change their IP addresses. Since the links between verification nodes and sentry nodes are in the private IP network, hackers cannot directly attack the verification nodes through the network. This will ensure that block proposals and votes of validation nodes will always be broadcast normally by sentry nodes.
 
-要配置哨兵节点架构，您可以按照以下说明进行操作：
+To configure the sentry node architecture, you can follow the following instructions:
 
-验证人节点应编辑其config.toml：
+Validation nodes should edit their config.toml:
 
 ```bash
-＃ 以英文逗号分隔的节点列表，以保持与之的持久连接
-＃ 如果您不想公开私有节点信息，则不要将其添加到此列表中
-persistent_peers = [哨兵节点列表]
+＃ Comma separated list of nodes to keep persistent connections
+＃ Do not add private peers to this list if you do not want them advertised
 
-＃ 关闭P2P网络对等交换
+persistent_peers = [list of sentry nodes]
+
+＃ Set true to enable the peer-exchange reactor
 pex = false
 ```
 
-哨兵节点应编辑其config.toml：
+Sentry nodes should edit their config.toml:
 
 ```bash
-＃ 以英文逗号分隔的节点ID列表，以保持私有（不会被广播到P2P网络）
-＃ 示例ID：3e16af0cead27979e1fc3dac57d03df3c7a77acc
+＃ comma separated list of peer IDs to keep private (will not be gossiped to other peers)
+＃ Example ID: 3e16af0cead27979e1fc3dac57d03df3c7a77acc
 
 private_peer_ids = "node_ids_of_private_peers"
 ```
