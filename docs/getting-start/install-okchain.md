@@ -95,4 +95,4 @@ To test any changes made in the SDK or Tendermint, a `replace` clause needs to b
 
 ## Next
 
-Now you can [join the mainnet](./join-mainnet.md), [the public testnet](./join-testnet.md) or [create you own testnet](./deploy-testnet.md)
+Now you can [join the mainnet](./join-okchain-mainnet.md), [the public testnet](./join-okchain-testnet.md) or [create you own testnet](./deploy-you-own-okchain-testnet.md)

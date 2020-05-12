@@ -1,8 +1,6 @@
 # Matching System
 
-# Order Matching System
-
-## Background
+## Order Matching System Background
 
 
 DEX’s matching system adopts a call auction mechanism. Since, in the blockchain system, orders are not continuously placed but are sorted in the sequence of block generation time, DEX, unlike most centralized exchanges, does not use a continuous auction algorithm to deal with orders. Instead, it matches orders periodically based on block generation intervals and by way of call auction.

@@ -1,6 +1,6 @@
 
 # Governance Parameter Proposal
-![text](../img/gov-parameter.png)
+![text](../../img/gov-parameter.png)
 
 Descriptions:
 

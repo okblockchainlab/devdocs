@@ -31,7 +31,7 @@ This guide helps you create a single validator node that runs a network locally 
 
 ### Requirements
 
-- [Install okchain](./installation.md)
+- [Install okchain](./install-okchain.md)
 - [Install `jq`](https://stedolan.github.io/jq/download/) (optional)
 
 ### Create Genesis File and Start the Network
@@ -69,7 +69,7 @@ From the [networks/local directory](https://github.com/cosmos/okchain/tree/maste
 
 ### Requirements
 
-- [Install okchain](./installation.md)
+- [Install okchain](./install-okchain.md)
 - [Install docker](https://docs.docker.com/engine/installation/)
 - [Install docker-compose](https://docs.docker.com/compose/install/)
 
@@ -79,7 +79,7 @@ Build the `okchaind` binary (linux) and the `tendermint/okchaindnode` docker ima
 
 ```bash
 # Clone the okchain repo
-git clone https://github.com/cosmos/okchain.git
+git clone https://github.com/okex/okchain.git
 
 # Work from the SDK repo
 cd okchain
