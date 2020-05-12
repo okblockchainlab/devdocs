@@ -81,10 +81,11 @@ okchaincli config indent true
 ### 1. Add an account:
 #### Parameter description:
 
-  | Parameter |        Mark         |
-  | :-------: | :------------------------: |
-  |   name    | Add an account name (eg. bob) |
-
++-------------+--------------------------+
+| Parameter   | Mark            |
++=============+==========================+
+| name      | Add an account name (eg. bob)   |
++-------------+-------------------------+
 #### Example:
 The system will randomly gerenate information including mnemonic phrases, public keys and addresses 
 ```bash
