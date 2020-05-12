@@ -102,6 +102,7 @@ Contents
    concepts/gov
    concepts/periodic_auction
    concepts/upgrade-concept
+   concepts/sentry-nodes
 
 
 .. toctree::
