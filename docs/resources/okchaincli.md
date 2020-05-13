@@ -74,6 +74,21 @@ okchaincli config output json
 okchaincli config indent true
 ```
 
+## okchaincli user manual
+
+[Keys](##Keys)  
+[Account](##Account)  
+[Token](##Token)  
+[Dex](##Dex)  
+[Send](##Send)  
+[Tx orders](##Tx orders)  
+[Backend](##Backend)  
+[Staking](##Staking)  
+[Distribution](##Distribution)  
+[Governance](##Governance)  
+[Slashing](##Slashing)  
+
+
 
 ## Keys
 
