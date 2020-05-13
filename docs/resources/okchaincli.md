@@ -76,17 +76,17 @@ okchaincli config indent true
 
 ## okchaincli user manual
 
-[Keys](##Keys)  
-[Account](##Account)  
-[Token](##Token)  
-[Dex](##Dex)  
-[Send](##Send)  
-[Tx orders](##Tx orders)  
-[Backend](##Backend)  
-[Staking](##Staking)  
-[Distribution](##Distribution)  
-[Governance](##Governance)  
-[Slashing](##Slashing)  
+[Keys](#keys)  
+[Account](#account)  
+[Token](#token)  
+[Dex](#dex)  
+[Send](#send)  
+[Orders](#orders)  
+[Backend](#backend)  
+[Staking](#staking)  
+[Distribution](#distribution)  
+[Governance](#governance)  
+[Slashing](#slashing)  
 
 
 
@@ -1214,7 +1214,7 @@ okchaincli query account cosmos1553hrs03kl2tlq47d9f6j477xdjp362l2cfetl
 ```
 
 
-## Tx orders
+## Orders
 
 Order attributes
 
