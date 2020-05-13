@@ -76,17 +76,17 @@ okchaincli config indent true
 
 ## okchaincli user manual
 
-[Keys](#keys)  
-[Account](#account)  
-[Token](#token)  
-[Dex](#dex)  
-[Send](#send)  
-[Orders](#orders)  
-[Backend](#backend)  
-[Staking](#staking)  
-[Distribution](#distribution)  
-[Governance](#governance)  
-[Slashing](#slashing)  
+* [Keys](#keys)  
+* [Account](#account)  
+* [Token](#token)  
+* [Dex](#dex)  
+* [Send](#send)  
+* [Orders](#orders)  
+* [Backend](#backend)  
+* [Staking](#staking)  
+* [Distribution](#distribution)  
+* [Governance](#governance)  
+* [Slashing](#slashing)  
 
 
 
