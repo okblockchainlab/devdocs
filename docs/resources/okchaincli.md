@@ -74,15 +74,29 @@ okchaincli config output json
 okchaincli config indent true
 ```
 
+## okchaincli user manual
+
+* [Keys](#keys)  
+* [Account](#account)  
+* [Token](#token)  
+* [Dex](#dex)  
+* [Send](#send)  
+* [Orders](#orders)  
+* [Backend](#backend)  
+* [Staking](#staking)  
+* [Distribution](#distribution)  
+* [Governance](#governance)  
+* [Slashing](#slashing)  
 
 
-## Key
+
+## Keys
 
 ### 1. Add an account:
 #### Parameter description:
 
   | Parameter |        Mark         |
-  | :-------: | :------------------------: |
+  | ------- | ------------------------ |
   |   name    | Add an account name (eg. bob) |
 
 #### Example:
@@ -728,750 +742,7 @@ okchaincli tx broadcast signedTx.json -b block -y
 The transfer of token ownership is successful only after the original owner(from) and the owner(to) sign upon and after the transfer.
 
 
-
-
-
-
-
-
-### Tx Broadcasting
-
-When broadcasting transactions, `okchaincli` accepts a `--broadcast-mode` flag. This
-flag can have a value of `sync` (default), `async`, or `block`, where `sync` makes
-the client return a CheckTx response, `async` makes the client return immediately,
-and `block` makes the client wait for the tx to be committed (or timing out).
-
-It is important to note that the `block` mode should **not** be used in most
-circumstances. This is because broadcasting can timeout but the tx may still be
-included in a block. This can result in many undesirable situations. Therefore, it
-is best to use `sync` or `async` and query by tx hash to determine when the tx
-is included in a block.
-
-### Fees & Gas
-
-Each transaction may either supply fees or gas prices, but not both.
-
-Validator's have a minimum gas price (multi-denom) configuration and they use
-this value when when determining if they should include the transaction in a block during `CheckTx`, where `gasPrices >= minGasPrices`. Note, your transaction must supply fees that are greater than or equal to **any** of the denominations the validator requires.
-
-**Note**: With such a mechanism in place, validators may start to prioritize
-txs by `gasPrice` in the mempool, so providing higher fees or gas prices may yield higher tx priority.
-
-e.g.
-
-```bash
-okchaincli tx send ... --fees=50000uatom
-```
-
-or
-
-```bash
-okchaincli tx send ... --gas-prices=0.025uatom
-```
-
-### Account
-
-#### Get Tokens
-
-On a testnet, getting tokens is usually done via a faucet.
-
-#### Query Account Balance
-
-After receiving tokens to your address, you can view your account's balance by typing:
-
-```bash
-okchaincli query account <account_cosmos>
-```
-
-::: warning Note
-When you query an account balance with zero tokens, you will get this error: `No account with address <account_cosmos> was found in the state.` This can also happen if you fund the account before your node has fully synced with the chain. These are both normal.
-
-:::
-
-### Send Tokens
-
-The following command could be used to send coins from one account to another:
-
-```bash
-okchaincli tx send <sender_key_name_or_address> <recipient_address> 10faucetToken \
-  --chain-id=<chain_id>
-```
-
-::: warning Note
-The `amount` argument accepts the format `<value|coin_name>`.
-:::
-
-::: tip Note
-You may want to cap the maximum gas that can be consumed by the transaction via the `--gas` flag.
-If you pass `--gas=auto`, the gas supply will be automatically estimated before executing the transaction.
-Gas estimate might be inaccurate as state changes could occur in between the end of the simulation and the actual execution of a transaction, thus an adjustment is applied on top of the original estimate in order to ensure the transaction is broadcasted successfully. The adjustment can be controlled via the `--gas-adjustment` flag, whose default value is 1.0.
-:::
-
-Now, view the updated balances of the origin and destination accounts:
-
-```bash
-okchaincli query account <account_cosmos>
-okchaincli query account <destination_cosmos>
-```
-
-You can also check your balance at a given block by using the `--block` flag:
-
-```bash
-okchaincli query account <account_cosmos> --block=<block_height>
-```
-
-You can simulate a transaction without actually broadcasting it by appending the
-`--dry-run` flag to the command line:
-
-```bash
-okchaincli tx send <sender_key_name_or_address> <destination_cosmosaccaddr> 10faucetToken \
-  --chain-id=<chain_id> \
-  --dry-run
-```
-
-Furthermore, you can build a transaction and print its JSON format to STDOUT by
-appending `--generate-only` to the list of the command line arguments:
-
-```bash
-okchaincli tx send <sender_address> <recipient_address> 10faucetToken \
-  --chain-id=<chain_id> \
-  --generate-only > unsignedSendTx.json
-```
-
-```bash
-okchaincli tx sign \
-  --chain-id=<chain_id> \
-  --from=<key_name> \
-  unsignedSendTx.json > signedSendTx.json
-```
-
-::: tip Note
-The `--generate-only` flag prevents `okchaincli` from accessing the local keybase.
-Thus when such flag is supplied `<sender_key_name_or_address>` must be an address.
-:::
-
-You can validate the transaction's signatures by typing the following:
-
-```bash
-okchaincli tx sign --validate-signatures signedSendTx.json
-```
-
-You can broadcast the signed transaction to a node by providing the JSON file to the following command:
-
-```bash
-okchaincli tx broadcast --node=<node> signedSendTx.json
-```
-
-### Query Transactions
-
-#### Matching a Set of Events
-
-You can use the transaction search command to query for transactions that match a
-specific set of `events`, which are added on every transaction.
-
-Each event is composed by a key-value pair in the form of `{eventType}.{eventAttribute}={value}`.
-Events can also be combined to query for a more specific result using the `&` symbol.
-
-You can query transactions by `events` as follows:
-
-```bash
-okchaincli query txs --events='message.sender=cosmos1...'
-```
-
-And for using multiple `events`:
-
-```bash
-okchaincli query txs --events='message.sender=cosmos1...&message.action=withdraw_delegator_reward'
-```
-
-The pagination is supported as well via `page` and `limit`:
-
-```bash
-okchaincli query txs --events='message.sender=cosmos1...' --page=1 --limit=20
-```
-
-::: tip Note
-
-The action tag always equals the message type returned by the `Type()` function of the relevant message.
-
-You can find a list of available `events` on each of the SDK modules:
-
-- [Staking events](https://github.com/cosmos/cosmos-sdk/blob/master/x/staking/spec/07_events.md)
-- [Governance events](https://github.com/cosmos/cosmos-sdk/blob/master/x/gov/spec/04_events.md)
-- [Slashing events](https://github.com/cosmos/cosmos-sdk/blob/master/x/slashing/spec/06_events.md)
-- [Distribution events](https://github.com/cosmos/cosmos-sdk/blob/master/x/distribution/spec/06_events.md)
-- [Bank events](https://github.com/cosmos/cosmos-sdk/blob/master/x/bank/spec/04_events.md)
-  :::
-
-#### Matching a Transaction's Hash
-
-You can also query a single transaction by its hash using the following command:
-
-```bash
-okchaincli query tx [hash]
-```
-
-### Slashing
-
-#### Unjailing
-
-To unjail your jailed validator
-
-```bash
-okchaincli tx slashing unjail --from <validator-operator-addr>
-```
-
-#### Signing Info
-
-To retrieve a validator's signing info:
-
-```bash
-okchaincli query slashing signing-info <validator-pubkey>
-```
-
-#### Query Parameters
-
-You can get the current slashing parameters via:
-
-```bash
-okchaincli query slashing params
-```
-
-### Minting
-
-You can query for the minting/inflation parameters via:
-
-```bash
-okchaincli query minting params
-```
-
-To query for the current inflation value:
-
-```bash
-okchaincli query minting inflation
-```
-
-To query for the current annual provisions value:
-
-```bash
-okchaincli query minting annual-provisions
-```
-
-### Staking
-
-#### Set up a Validator
-
-Please refer to the [Validator Setup](../validators/validators-guide-cli.md) section for a more complete guide on how to set up a validator-candidate.
-
-#### Delegate to a Validator
-
-On the upcoming mainnet, you can delegate `okt` to a validator. These [delegators](../delegators/delegator-faq.md) can receive part of the validator's fee revenue. Read more about the [OKChain Token Model](https://github.com/cosmos/cosmos/raw/master/Cosmos_Token_Model.pdf).
-
-##### Query Validators
-
-You can query the list of all validators of a specific chain:
-
-```bash
-okchaincli query staking validators
-```
-
-If you want to get the information of a single validator you can check it with:
-
-```bash
-okchaincli query staking validator <account_cosmosval>
-```
-
-#### Bond Tokens
-
-On the OKChain mainnet, we delegate `uatom`, where `1atom = 1000000uatom`. Here's how you can bond tokens to a testnet validator (_i.e._ delegate):
-
-```bash
-okchaincli tx staking delegate \
-  --amount=10000000uatom \
-  --validator=<validator> \
-  --from=<key_name> \
-  --chain-id=<chain_id>
-```
-
-`<validator>` is the operator address of the validator to which you intend to delegate. If you are running a local testnet, you can find this with:
-
-```bash
-okchaincli keys show [name] --bech val
-```
-
-where `[name]` is the name of the key you specified when you initialized `okchaind`.
-
-While tokens are bonded, they are pooled with all the other bonded tokens in the network. Validators and delegators obtain a percentage of shares that equal their stake in this pool.
-
-##### Query Delegations
-
-Once submitted a delegation to a validator, you can see it's information by using the following command:
-
-```bash
-okchaincli query staking delegation <delegator_addr> <validator_addr>
-```
-
-Or if you want to check all your current delegations with disctinct validators:
-
-```bash
-okchaincli query staking delegations <delegator_addr>
-```
-
-#### Unbond Tokens
-
-If for any reason the validator misbehaves, or you just want to unbond a certain
-amount of tokens, use this following command.
-
-```bash
-okchaincli tx staking unbond \
-  <validator_addr> \
-  10atom \
-  --from=<key_name> \
-  --chain-id=<chain_id>
-```
-
-The unbonding will be automatically completed when the unbonding period has passed.
-
-##### Query Unbonding-Delegations
-
-Once you begin an unbonding-delegation, you can see it's information by using the following command:
-
-```bash
-okchaincli query staking unbonding-delegation <delegator_addr> <validator_addr>
-```
-
-Or if you want to check all your current unbonding-delegations with disctinct validators:
-
-```bash
-okchaincli query staking unbonding-delegations <account_cosmos>
-```
-
-Additionally, as you can get all the unbonding-delegations from a particular validator:
-
-```bash
-okchaincli query staking unbonding-delegations-from <account_cosmosval>
-```
-
-#### Redelegate Tokens
-
-A redelegation is a type delegation that allows you to bond illiquid tokens from one validator to another:
-
-```bash
-okchaincli tx staking redelegate \
-  <src-validator-operator-addr> \
-  <dst-validator-operator-addr> \
-  10atom \
-  --from=<key_name> \
-  --chain-id=<chain_id>
-```
-
-Here you can also redelegate a specific `shares-amount` or a `shares-fraction` with the corresponding flags.
-
-The redelegation will be automatically completed when the unbonding period has passed.
-
-##### Query Redelegations
-
-Once you begin an redelegation, you can see it's information by using the following command:
-
-```bash
-okchaincli query staking redelegation <delegator_addr> <src_val_addr> <dst_val_addr>
-```
-
-Or if you want to check all your current unbonding-delegations with distinct validators:
-
-```bash
-okchaincli query staking redelegations <account_cosmos>
-```
-
-Additionally, as you can get all the outgoing redelegations from a particular validator:
-
-```bash
-  okchaincli query staking redelegations-from <account_cosmosval>
-```
-
-#### Query Parameters
-
-Parameters define high level settings for staking. You can get the current values by using:
-
-```bash
-okchaincli query staking params
-```
-
-With the above command you will get the values for:
-
-- Unbonding time
-- Maximum numbers of validators
-- Coin denomination for staking
-
-All these values will be subject to updates though a `governance` process by `ParameterChange` proposals.
-
-#### Query Pool
-
-A staking `Pool` defines the dynamic parameters of the current state. You can query them with the following command:
-
-```bash
-okchaincli query staking pool
-```
-
-With the `pool` command you will get the values for:
-
-- Not-bonded and bonded tokens
-- Token supply
-- Current annual inflation and the block in which the last inflation was processed
-- Last recorded bonded shares
-
-##### Query Delegations To Validator
-
-You can also query all of the delegations to a particular validator:
-
-```bash
-  okchaincli query delegations-to <account_cosmosval>
-```
-
-### Governance
-
-Governance is the process from which users in the OKChain can come to consensus
-on software upgrades, parameters of the mainnet or signaling mechanisms through
-text proposals. This is done through voting on proposals, which will be submitted
-by `OKT` holders on the mainnet.
-
-Some considerations about the voting process:
-
-- Voting is done by bonded `OKT` holders on a 1 bonded `OKT` 1 vote basis
-- Delegators inherit the vote of their validator if they don't vote
-- Votes are tallied at the end of the voting period (2 weeks on mainnet) where
-  each address can vote multiple times to update its `Option` value (paying the transaction fee each time),
-  only the most recently cast vote will count as valid
-- Voters can choose between options `Yes`, `No`, `NoWithVeto` and `Abstain`
-- At the end of the voting period, a proposal is accepted iff:
-  - `(YesVotes / (YesVotes+NoVotes+NoWithVetoVotes)) > 1/2`
-  - `(NoWithVetoVotes / (YesVotes+NoVotes+NoWithVetoVotes)) < 1/3`
-  - `((YesVotes+NoVotes+NoWithVetoVotes) / totalBondedStake) >= quorum`
-
-For more information about the governance process and how it works, please check
-out the Governance module [specification](https://github.com/cosmos/cosmos-sdk/tree/master/x/gov/spec).
-
-#### Create a Governance Proposal
-
-In order to create a governance proposal, you must submit an initial deposit
-along with a title and description. Various modules outside of governance may
-implement their own proposal types and handlers (eg. parameter changes), where
-the governance module itself supports `Text` proposals. Any module
-outside of governance has it's command mounted on top of `submit-proposal`.
-
-To submit a `Text` proposal:
-
-```bash
-okchaincli tx gov submit-proposal \
-  --title=<title> \
-  --description=<description> \
-  --type="Text" \
-  --deposit="1000000uatom" \
-  --from=<name> \
-  --chain-id=<chain_id>
-```
-
-You may also provide the proposal directly through the `--proposal` flag which
-points to a JSON file containing the proposal.
-
-To submit a parameter change proposal, you must provide a proposal file as its
-contents are less friendly to CLI input:
-
-```bash
-okchaincli tx gov submit-proposal param-change <path/to/proposal.json> \
-  --from=<name> \
-  --chain-id=<chain_id>
-```
-
-Where `proposal.json` contains the following:
-
-```json
-{
-  "title": "Param Change",
-  "description": "Update max validators",
-  "changes": [
-    {
-      "subspace": "staking",
-      "key": "MaxValidators",
-      "value": 105
-    }
-  ],
-  "deposit": [
-    {
-      "denom": "stake",
-      "amount": "10000000"
-    }
-  ]
-}
-```
-
-::: danger Warning
-
-Currently parameter changes are _evaluated_ but not _validated_, so it is very important
-that any `value` change is valid (ie. correct type and within bounds) for its
-respective parameter, eg. `MaxValidators` should be an integer and not a decimal.
-
-Proper vetting of a parameter change proposal should prevent this from happening
-(no deposits should occur during the governance process), but it should be noted
-regardless.
-
-:::
-
-::: tip Note
-
-The `SoftwareUpgrade` is currently not supported as it's not implemented and
-currently does not differ from the semantics of a `Text` proposal.
-
-:::
-
-##### Query Proposals
-
-Once created, you can now query information of the proposal:
-
-```bash
-okchaincli query gov proposal <proposal_id>
-```
-
-Or query all available proposals:
-
-```bash
-okchaincli query gov proposals
-```
-
-You can also query proposals filtered by `voter` or `depositor` by using the corresponding flags.
-
-To query for the proposer of a given governance proposal:
-
-```bash
-okchaincli query gov proposer <proposal_id>
-```
-
-#### Increase Deposit
-
-In order for a proposal to be broadcasted to the network, the amount deposited must be above a `minDeposit` value (initial value: `512000000uatom`). If the proposal you previously created didn't meet this requirement, you can still increase the total amount deposited to activate it. Once the minimum deposit is reached, the proposal enters voting period:
-
-```bash
-okchaincli tx gov deposit <proposal_id> "10000000uatom" \
-  --from=<name> \
-  --chain-id=<chain_id>
-```
-
-> _NOTE_: Proposals that don't meet this requirement will be deleted after `MaxDepositPeriod` is reached.
-
-##### Query Deposits
-
-Once a new proposal is created, you can query all the deposits submitted to it:
-
-```bash
-okchaincli query gov deposits <proposal_id>
-```
-
-You can also query a deposit submitted by a specific address:
-
-```bash
-okchaincli query gov deposit <proposal_id> <depositor_address>
-```
-
-#### Vote on a Proposal
-
-After a proposal's deposit reaches the `MinDeposit` value, the voting period opens. Bonded `okt` holders can then cast vote on it:
-
-```bash
-okchaincli tx gov vote <proposal_id> <Yes/No/NoWithVeto/Abstain> \
-  --from=<name> \
-  --chain-id=<chain_id>
-```
-
-##### Query Votes
-
-Check the vote with the option you just submitted:
-
-```bash
-okchaincli query gov vote <proposal_id> <voter_address>
-```
-
-You can also get all the previous votes submitted to the proposal with:
-
-```bash
-okchaincli query gov votes <proposal_id>
-```
-
-#### Query proposal tally results
-
-To check the current tally of a given proposal you can use the `tally` command:
-
-```bash
-okchaincli query gov tally <proposal_id>
-```
-
-#### Query Governance Parameters
-
-To check the current governance parameters run:
-
-```bash
-okchaincli query gov params
-```
-
-To query subsets of the governance parameters run:
-
-```bash
-okchaincli query gov param voting
-okchaincli query gov param tallying
-okchaincli query gov param deposit
-```
-
-### Fee Distribution
-
-#### Query Distribution Parameters
-
-To check the current distribution parameters, run:
-
-```bash
-okchaincli query distribution params
-```
-
-#### Query distribution Community Pool
-
-To query all coins in the community pool which is under Governance control:
-
-```bash
-okchaincli query distribution community-pool
-```
-
-#### Query outstanding rewards
-
-To check the current outstanding (un-withdrawn) rewards, run:
-
-```bash
-okchaincli query distribution outstanding-rewards
-```
-
-#### Query Validator Commission
-
-To check the current outstanding commission for a validator, run:
-
-```bash
-okchaincli query distribution commission <validator_address>
-```
-
-#### Query Validator Slashes
-
-To check historical slashes for a validator, run:
-
-```bash
-okchaincli query distribution slashes <validator_address> <start_height> <end_height>
-```
-
-#### Query Delegator Rewards
-
-To check current rewards for a delegation (were they to be withdrawn), run:
-
-```bash
-okchaincli query distribution rewards <delegator_address> <validator_address>
-```
-
-#### Query All Delegator Rewards
-
-To check all current rewards for a delegation (were they to be withdrawn), run:
-
-```bash
-okchaincli query distribution rewards <delegator_address>
-```
-
-### Multisig Transactions
-
-Multisig transactions require signatures of multiple private keys. Thus, generating and signing
-a transaction from a multisig account involve cooperation among the parties involved. A multisig
-transaction can be initiated by any of the key holders, and at least one of them would need to
-import other parties' public keys into their Keybase and generate a multisig public key
-in order to finalize and broadcast the transaction.
-
-For example, given a multisig key comprising the keys `p1`, `p2`, and `p3`, each of which is held
-by a distinct party, the user holding `p1` would require to import both `p2` and `p3` in order to
-generate the multisig account public key:
-
-```bash
-okchaincli keys add \
-  p2 \
-  --pubkey=cosmospub1addwnpepqtd28uwa0yxtwal5223qqr5aqf5y57tc7kk7z8qd4zplrdlk5ez5kdnlrj4
-
-okchaincli keys add \
-  p3 \
-  --pubkey=cosmospub1addwnpepqgj04jpm9wrdml5qnss9kjxkmxzywuklnkj0g3a3f8l5wx9z4ennz84ym5t
-
-okchaincli keys add \
-  p1p2p3 \
-  --multisig-threshold=2 \
-  --multisig=p1,p2,p3
-```
-
-A new multisig public key `p1p2p3` has been stored, and its address will be
-used as signer of multisig transactions:
-
-```bash
-okchaincli keys show --address p1p2p3
-```
-
-You may also view multisig threshold, pubkey constituents and respective weights
-by viewing the JSON output of the key or passing the `--show-multisig` flag:
-
-```bash
-okchaincli keys show p1p2p3 -o json
-
-okchaincli keys show p1p2p3 --show-multisig
-```
-
-The first step to create a multisig transaction is to initiate it on behalf
-of the multisig address created above:
-
-```bash
-okchaincli tx send cosmos1570v2fq3twt0f0x02vhxpuzc9jc4yl30q2qned 1000000uatom \
-  --from=<multisig_address> \
-  --generate-only > unsignedTx.json
-```
-
-The file `unsignedTx.json` contains the unsigned transaction encoded in JSON.
-`p1` can now sign the transaction with its own private key:
-
-```bash
-okchaincli tx sign \
-  unsignedTx.json \
-  --multisig=<multisig_address> \
-  --from=p1 \
-  --output-document=p1signature.json
-```
-
-Once the signature is generated, `p1` transmits both `unsignedTx.json` and
-`p1signature.json` to `p2` or `p3`, which in turn will generate their
-respective signature:
-
-```bash
-okchaincli tx sign \
-  unsignedTx.json \
-  --multisig=<multisig_address> \
-  --from=p2 \
-  --output-document=p2signature.json
-```
-
-`p1p2p3` is a 2-of-3 multisig key, therefore one additional signature
-is sufficient. Any the key holders can now generate the multisig
-transaction by combining the required signature files:
-
-```bash
-okchaincli tx multisign \
-  unsignedTx.json \
-  p1p2p3 \
-  p1signature.json p2signature.json > signedTx.json
-```
-
-The transaction can now be sent to the node:
-
-```bash
-okchaincli tx broadcast signedTx.json
-```
-
-
-## Open Dex
+## Dex
 
 Decentralized exchange management subcommands
 
@@ -1498,8 +769,6 @@ Secondary subcommand including features as below
 
 ### List a token pair
 
-
-
 ```shell
 $ okchaincli tx dex list -h
 
@@ -1520,11 +789,7 @@ Flags:
 
 ```
 
-
-
 ### Deposit an amount of okt on a token pair
-
-
 
 ```shell
 $ okchaincli tx dex deposit -h
@@ -1543,12 +808,7 @@ Flags:
 ```
 
 
-
-
-
 ### Withdraw an amount of okt from a token pairs
-
-
 
 ```shell
 $ okchaincli tx dex  withdraw -h
@@ -1565,8 +825,6 @@ Flags:
   -h, --help                    help for withdraw
   -y, --yes                     Skip tx broadcasting prompt confirmation
 ```
-
-
 
 ### transfer the ownership of token pair
 
@@ -1748,7 +1006,6 @@ Flags:
 
 ### Query the listed token pairs
 
-
 ```shell
 $ okchaincli query dex products -h
 
@@ -1765,8 +1022,6 @@ Flags:
     --owner string         address of the product owner
 -p, --page-number int      page num (default 1)
 ```
-
-
 
 ### Query token pairs deposits of account
 
@@ -1785,12 +1040,7 @@ Flags:
 -p, --page-number int      page num (default 1)
 ```
 
-
-
-  
-
 ### Query the match order of token pairs
-
 
 ```shell
 $ okchaincli query dex match-order -h
@@ -1807,8 +1057,6 @@ Flags:
 -p, --page-number int      page num (default 1)
 ```
 
-
-
 ### Query relevant parameters from DEX
 
 Query the all the parameters for the governance process
@@ -1823,9 +1071,6 @@ Usage:
     okchaincli query dex params [flags]
 
 ```
-
-
-
 
 ### Query all the delisting token pairs
 
@@ -1969,7 +1214,7 @@ okchaincli query account cosmos1553hrs03kl2tlq47d9f6j477xdjp362l2cfetl
 ```
 
 
-## Tx orders
+## Orders
 
 Order attributes
 
@@ -2279,1282 +1524,6 @@ okchaincli query order params
   "trade_fee_rate_native": "0.00040000"
 }
 ```
-
-
-## Validator
-
-### Create, destroy, edit-validator
-
-#### Create validator
-
-
-Create a new validator with own keys
-
-```shell
-$ okchaincli tx staking create-validator -h
-
-Example:
-    okchaincli tx staking create-validator --moniker $MONIKER --pubkey $PUBKEY --from mykey
-    
-Usage:
-    okchaincli tx staking create-validator [flags]
-
-Flags:
-    -- moniker  	The validator's name
-    -- pubkey  		The Bech32 encoded PubKey of the validator  
-```
-
-#### Destroy validator
-
-Unbonding of MSD causes the validator to enter unbonding from the bonded state while jailed, and the operation will not affect the voting of other delegators on this validator.
-
-After the operation is performed, the delegator can still withdraw the vote (unbond or change the vote) from the validator. Once the number of votes and MSD of the validator are both 0, the validator will be completely removed from the validator set.
-
-
-The Unbonded MSD has a freeze period of 14 days (the same as the normal unboundingtime parameter)
-
-
-
-Destroy a validator and withdraw the self-delegation
-
-```shell
-$ okchaincli tx staking destroy-validator -h
-  
-Example:
-    okchaincli tx staking destroy-validator --from mykey
-    
-Usage:
-    okchaincli tx staking destroy-validator [flags]
-
-```
-
-#### Edit validator
-
-
-Edit the detail info of a validator
-
-```shell
-$ okchaincli tx staking edit-validator -h
-
-Example:
-    okchaincli tx staking edit-validator --moniker "my new name" --identity "http://mynewwebsite/pic/newlogo.jpg" --website "http://mynewwebsites" --details "my new slogans" --from mykey
-	
-Usage:
-    okchaincli tx staking edit-validator [flags]
-
-Flags:
-	  -- moniker		The validator's name (default "[do-not-modify]")
-	  -- identity		The  (optional) identity signature (ex. UPort or Keybase) (default "[do-not-modify]")
-	  -- website		The validator's (optional) website (default "[do-not-modify]")
-	  -- details 		The validator's (optional) details (default "[do-not-modify]")
-```
-
-### Delegate & vote
-
-#### Delegate
-
-
-Delegate an amount of okt
-
-```shell
-$ okchaincli tx staking delegate -h
-
-Example:
-	  okchaincli tx staking delegate 1024.1024okt --from mykey
-	  
-Usage:
-    okchaincli tx staking delegate [amount] [flags]
-    
-
-```
-
-#### Vote 
-
-Vote on one or more validator(s) by delegate okt
-
-Vote on one or more validator(s)
-
-```shell
-$ okchaincli tx staking vote -h
-
- 
-Example:
-    okchaincli tx staking vote okchainvaloper1alq9na49n9yycysh889rl90g9nhe58lcs50wu5,okchainvaloper1svzxp4ts5le2s4zugx34ajt6shz2hg42a3gl7g,okchainvaloper10q0rk5qnyag7wfvvt7rtphlw589m7frs863s3m,okchainvaloper1g7znsf24w4jc3xfca88pq9kmlyjdare6mph5rx --from mykey
-
-Usage:
-    okchaincli tx staking vote [validator-addr1, validator-addr2, validator-addr3, ... validator-addrN] [flags]
-```
-
-#### Unbond
-
-Unbond the deposit token while canceling all the votes, it takes 14 days for unbonding the tokens.
-
-  
-   - [ ] allow the user to exchange votes into tokens multiple times, and the number of votes allowed to be withdrawan from deposit can be 0.001 \ ~ n (total number of votes owned by the user)
-   - [ ] if the user status is "voted", after the command is executed, the number of votes that have been voted will be automatically updated and deducted. Essentially, the new votes will be used for re voting
-   - [ ] if the user status is "voted", execute the command and withdraw all the votes, essentially execute the unbond behavior
-   - [ ] if the user's status is "not voted", after the command is executed, the votes will not be affected. After 14 days, it will be converted into token and returned to the user's account
-   - [ ] users are allowed to perform the "unbond" operation for many times, but it only takes effect for the last time, and the last unbond operation automatically accumulates the transaction amount in the process of unbond
-   
-Unbond shares and withdraw the same amount of votes
-
-```shell
-$ okchaincli tx staking unbond -h
-
-Example:
-    okchaincli tx staking unbond 1024.1024okt --from mykey
-
-Usage:
-    okchaincli tx staking unbond [amount] [flags]
-
-```
-
-#### query delegator & vote information
-
-
-Query the information of delegations and all votes recently made by a delegator
-
-```shell
-$ okchaincli query staking delegator -h
-
-Example:
-    okchaincli query staking delegator okchain1hw4r48aww06ldrfeuq2v438ujnl6alszzzqpph
-    
-Usage:
-    okchaincli query staking delegator [address] [flags]
-	
-```
-
-#### Query the votes info on a specific validator
-
-
-Query the information of all votes recently made to a validator
-
-```shell
-$ okchaincli query staking votes-to -h
-
-Example:
-	  okchaincli query staking votes-to okchainvaloper1alq9na49n9yycysh889rl90g9nhe58lcs50wu5
-	  
-Usage:
-    okchaincli query staking votes-to [validator-addr] [flags]
-
-```
-
-#### Query others
-
-```
-Usage:
-    okchaincli query staking [command] [flags]
-
-Available Commands:
-    validator                  Query a validator
-    validators                 Query for all validators
-    params                     Query the current staking parameters information
-    pool                       Query the current staking pool values
-```
-
-### Proxy vote
-
-#### Register proxy
-
-Used for register as a proxy
-
-Become a proxy by registration
-
-```shell
-$ okchaincli tx staking proxy reg -h
-
-Example:
-	  okchaincli tx staking proxy reg --from mykey
-	  
-Usage:
-	  okchaincli tx staking proxy reg [flags]
-
-```
-
-#### Unregister proxy
-
-
-Unregister the proxy identity
-
-```shell
-$ okchaincli tx staking proxy unreg -h
-
-Example:
-	  okchaincli tx staking proxy unreg --from mykey
-	  
-Usage:
-    okchaincli tx staking proxy unreg [flags]
-
-```
-
-#### Bind proxy
-
-
-Bind proxy relationship
-
-```shell
-$ okchaincli tx staking proxy bind -h
-
-Example:
-	  okchaincli tx staking proxy bind okchain1hw4r48aww06ldrfeuq2v438ujnl6alszzzqpph --from mykey
-	  
-Usage:
-    okchaincli tx staking proxy bind [flags]
-
-```
-
-#### Unbind proxy
-
-
-Unbind proxy relationship
-
-```shell
-$ okchaincli tx staking proxy unbind -h
-
-Example:
-	  okchaincli tx staking proxy unbind okchain1hw4r48aww06ldrfeuq2v438ujnl6alszzzqpph --from mykey
-	  
-Usage:
-    okchaincli tx staking proxy unbind [flags]
-
-```
-
-#### Query proxy
-
-
-Query the addresses of delegators by a specific proxy
-
-```shell
-$ okchaincli query staking proxy -h
-
-Example:
-	  okchaincli query staking proxy okchain1hw4r48aww06ldrfeuq2v438ujnl6alszzzqpph
-	  
-Usage:
-    okchaincli query staking proxy [address] [flags]
-
-
-```
-
-#### Withdraw rewards
-
-
-Withdraw rewards coming from fees to the validator account
-
-```shell
-$ okchaincli tx distr withdraw-rewards -h
-
-Example：
-    okchaincli tx distr withdraw-rewards okchainvaloper1g7znsf24w4jc3xfca88pq9kmlyjdare6mph5rx --from ${name} --node ${url}
-
-Usage: 
-    okchaincli tx distr withdraw-rewards [validator-address] [flags]
-
-
-Flags：
-	--from ${name} 指定命令发送者账户
-	--node ${url}  节点地址
-```
-
-#### Send a proposal used for withdraw rewards from community pool
-
-Send a proposal used for withdraw rewards from community pool
-
-```shell
-$ okchaincli tx gov submit-proposal community-pool-spend -h
-
-Example:
-	okchaincli tx gov submit-proposal community-pool-spend <path/to/proposal.json> --from=<key_or_address>
-
-Where proposal.json contains:
-{
-  "title": "Community Pool Spend",
-  "description": "Pay me some okt!",
-  "recipient": "okchain5afhd6gxevu37mkqcvvsj8qeylhn0rz46zdlq",
-  "amount": [
-    {
-      "denom": "okt",
-      "amount": "10000"
-    }
-  ],
-  "deposit": [
-    {
-      "denom": "okt",
-      "amount": "10000"
-    }
-  ]
-}
-
-Usage: 
-    okchaincli tx gov submit-proposal community-pool-spend [proposal-file] [flags]
-
-Flags：
-	--from ${name} 指定命令发送者账户 
-	--node ${url}  节点地址 nodes address 
-```
-
-
-#### Query distribution parameters
-
-Execution parameters for distribution module
-
-Query distribution parameters
-
-```shell
-$ okchaincli query distr params -h
-
-Example：
-    okchaincli query distr params --node ${url}
-    
-Usage: 
-    okchaincli query distr params [flags]
-
-Flags：
-	--node ${url}  validator address
-```
-
-#### Query community pool
-
-
-Query all coins in the community pool which is under Governance control.
-
-```shell
-$ okchaincli query distr community-pool -h
-
-Example：
-    okchaincli query distr community-pool --node ${url}
-    
-Usage: 
-    okchaincli query distr community-pool [flags]
-
-Flags：
-	--node ${url}  节点地址
-```
-
-#### Query validator commission rewards from delegators
-
-Query validator commission rewards from delegators to that validator.
-
-```shell
-$ okchaincli query distr commission -h
-
-Example：
-    okchaincli query distr commission okchainvaloper1g7znsf24w4jc3xfca88pq9kmlyjdare6mph5rx --node ${url}
-    
-Usage: 
-    okchaincli query distr commission [validator] [flags]
-
-Flags：
-	--node ${url}  validator address
-```
-
-
-
-
-
-### Onchain governance
-
-#### Dex delist proposal
-
-
-Submit a dex delist proposal along with an initial deposit.
-
-```shell
-$ okchaincli tx gov submit-proposal delist-proposal -h
-
-Submit a dex delist proposal along with an initial deposit.
-The proposal details must be supplied via a JSON file.
-
-Example:
-  okchaincli tx gov submit-proposal delist-proposal <path/to/proposal.json> --from=<key_or_address>
-
-Where proposal.json contains:
-
-{
- "title": "delist xxx/okt",
- "description": "delist asset from dex",
- "base_asset": "xxx",
- "quote_asset": "okt",
- "deposit": [
-   {
-     "denom": "okt",
-     "amount": "100"
-   }
- ]
-}
-
-Usage:
-  okchaincli tx gov submit-proposal delist-proposal [proposal-file] [flags]
-
-Flags:
-  -a, --account-number uint     The account number of the signing account (offline mode only)
-  -b, --broadcast-mode string   Transaction broadcasting mode (sync|async|block) (default "sync")
-      --dry-run                 ignore the --gas flag and perform a simulation of a transaction, but don't broadcast it
-      --fees string             Fees to pay along with transaction; eg: 1okt
-      --from string             Name or address of private key with which to sign
-      --gas string              gas limit to set per-transaction; set to "auto" to calculate required gas automatically (default 200000) (default "200000")
-      --gas-adjustment float    adjustment factor to be multiplied against the estimate returned by the tx simulation; if the gas limit is set manually this flag is ignored  (default 1)
-      --gas-prices string       Gas prices to determine the transaction fee (e.g. 1okt)
-      --generate-only           Build an unsigned transaction and write it to STDOUT (when enabled, the local Keybase is not accessible and the node operates offline)
-  -h, --help                    help for delist-proposal
-      --indent                  Add indent to JSON response
-      --ledger                  Use a connected Ledger device
-      --memo string             Memo to send along with transaction
-      --node string             <host>:<port> to tendermint rpc interface for this chain (default "tcp://localhost:26657")
-      --sequence uint           The sequence number of the signing account (offline mode only)
-      --trust-node              Trust connected full node (don't verify proofs for responses) (default true)
-  -y, --yes                     Skip tx broadcasting prompt confirmation
-
-Global Flags:
-      --chain-id string   Chain ID of tendermint node
-  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
-      --home string       directory for config and data (default "/Users/admin/.okchaincli")
-  -o, --output string     Output format (text|json) (default "text")
-      --passwd string     Pass word of sender (default "12345678")
-      --trace             print out full stack trace on errors
-```
-
-#### Text proposal
-
-
-Submit a proposal along with an initial deposit.
-
-```shell
-$ okchaincli tx gov  submit-proposal -h
-Submit a proposal along with an initial deposit.
-Proposal title, description, type and deposit can be given directly or through a proposal JSON file.
-
-Example:
-  okchaincli tx gov submit-proposal --proposal="path/to/proposal.json" --from mykey
-
-Where proposal.json contains:
-
-{
-  "title": "Test Proposal",
-  "description": "My awesome proposal",
-  "type": "Text",
-  "deposit": "10okt"
-}
-
-Which is equivalent to:
-
-  okchaincli tx gov submit-proposal --title="Test Proposal" --description="My awesome proposal" --type="Text" \
-	--deposit="10okt" --from mykey
-
-Usage:
-  okchaincli tx gov submit-proposal [flags]
-  okchaincli tx gov submit-proposal [command]
-
-Available Commands:
-  upgrade              submit a app upgrade proposal
-  param-change         Submit a parameter change proposal
-  delist-proposal      Submit a dex delist proposal
-  community-pool-spend Submit a community pool spend proposal
-
-Flags:
-  -a, --account-number uint     The account number of the signing account (offline mode only)
-  -b, --broadcast-mode string   Transaction broadcasting mode (sync|async|block) (default "sync")
-      --deposit string          deposit of proposal
-      --description string      description of proposal
-      --dry-run                 ignore the --gas flag and perform a simulation of a transaction, but don't broadcast it
-      --fees string             Fees to pay along with transaction; eg: 1okt
-      --from string             Name or address of private key with which to sign
-      --gas string              gas limit to set per-transaction; set to "auto" to calculate required gas automatically (default 200000) (default "200000")
-      --gas-adjustment float    adjustment factor to be multiplied against the estimate returned by the tx simulation; if the gas limit is set manually this flag is ignored  (default 1)
-      --gas-prices string       Gas prices to determine the transaction fee (e.g. 1okt)
-      --generate-only           Build an unsigned transaction and write it to STDOUT (when enabled, the local Keybase is not accessible and the node operates offline)
-  -h, --help                    help for submit-proposal
-      --indent                  Add indent to JSON response
-      --ledger                  Use a connected Ledger device
-      --memo string             Memo to send along with transaction
-      --node string             <host>:<port> to tendermint rpc interface for this chain (default "tcp://localhost:26657")
-      --proposal string         proposal file path (if this path is given, other proposal flags are ignored)
-      --sequence uint           The sequence number of the signing account (offline mode only)
-      --title string            title of proposal
-      --trust-node              Trust connected full node (don't verify proofs for responses) (default true)
-      --type string             proposalType of proposal, types: text/parameter_change/software_upgrade
-  -y, --yes                     Skip tx broadcasting prompt confirmation
-
-Global Flags:
-      --chain-id string   Chain ID of tendermint node
-  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
-      --home string       directory for config and data (default "/Users/admin/.okchaincli")
-  -o, --output string     Output format (text|json) (default "text")
-      --passwd string     Pass word of sender (default "12345678")
-      --trace             print out full stack trace on errors
-
-Use "okchaincli tx gov submit-proposal [command] --help" for more information about a command.
-```
-###### Parameter description：
-
-| Name                | Description  |
-| :------             | :------  |
-| --title             | title of the proposal  |
-| --description       | description of the proposal (for text proposals only) 
-| --type              | type of the proposal initiated (for text proposals only) |
-| --deposit           | initial deposit specified when the proposal is initiated  |
-| --from              | account name specified for sending a transaction |
-| --home              | account name and the directory where okchaincli is configured
-if it is ~/.okchaincli can ignore the parameters |
-| -b/--broadcast-mode | specific transaction broadcast modes（async、sync、block）|
-
-
-#### Change parameter proposal
-
-
-Submit a parameter modification proposal along with an initial deposit.
-
-```shell
-$ okchaincli tx gov  submit-proposal param-change -h
-
-Submit a parameter modification proposal along with an initial deposit.
-The proposal details must be supplied via a JSON file. For values that contains
-objects, only non-empty fields will be updated.
-
-IMPORTANT: Currently parameter changes are evaluated but not validated, so it is
-very important that any "value" change is valid (ie. correct type and within bounds)
-for its respective parameter, eg. "MaxValidators" should be an integer and not a decimal.
-
-Proper vetting of a parameter change proposal should prevent this from happening
-(no deposits should occur during the governance process), but it should be noted
-regardless.
-
-Example:
-  okchaincli tx gov submit-proposal param-change <path/to/proposal.json> --from=<key_or_address>
-
-Where proposal.json contains:
-
-{
-  "title": "Staking Param Change",
-  "description": "Update max validators",
-  "changes": [
-    {
-      "subspace": "staking",
-      "key": "MaxValidators",
-      "value": 105
-    }
-  ],
-  "deposit": [
-    {
-      "denom": common.NativeToken,
-      "amount": "10000"
-    }
-  ],
-  "height": "1000"
-}
-
-Usage:
-  okchaincli tx gov submit-proposal param-change [proposal-file] [flags]
-
-Flags:
-  -a, --account-number uint     The account number of the signing account (offline mode only)
-  -b, --broadcast-mode string   Transaction broadcasting mode (sync|async|block) (default "sync")
-      --dry-run                 ignore the --gas flag and perform a simulation of a transaction, but don't broadcast it
-      --fees string             Fees to pay along with transaction; eg: 1 okt
-      --from string             Name or address of private key with which to sign
-      --gas string              gas limit to set per-transaction; set to "auto" to calculate required gas automatically (default 200000) (default "200000")
-      --gas-adjustment float    adjustment factor to be multiplied against the estimate returned by the tx simulation; if the gas limit is set manually this flag is ignored  (default 1)
-      --gas-prices string       Gas prices to determine the transaction fee (e.g. 1okt)
-      --generate-only           Build an unsigned transaction and write it to STDOUT (when enabled, the local Keybase is not accessible and the node operates offline)
-  -h, --help                    help for param-change
-      --indent                  Add indent to JSON response
-      --ledger                  Use a connected Ledger device
-      --memo string             Memo to send along with transaction
-      --node string             <host>:<port> to tendermint rpc interface for this chain (default "tcp://localhost:26657")
-      --sequence uint           The sequence number of the signing account (offline mode only)
-      --trust-node              Trust connected full node (don't verify proofs for responses) (default true)
-  -y, --yes                     Skip tx broadcasting prompt confirmation
-
-Global Flags:
-      --chain-id string   Chain ID of tendermint node
-  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
-      --home string       directory for config and data (default "/Users/admin/.okchaincli")
-  -o, --output string     Output format (text|json) (default "text")
-      --passwd string     Pass word of sender (default "12345678")
-      --trace             print out full stack trace on errors
-```
-
-###### Parameter description
-
-| Name                | Description |
-| :------             | :------ |
-| --title             | title of the proposal  |
-| --type              | type of the proposal initiated (for parameterchange proposals only) |
-| --deposit           | initial deposit specified when the proposal is initiated |
-| --param             | specific parameters and values to be modified (gov/MinDeposit=1000okt
-modify the MinDeposit parameters in the module to be governed to 1000okt. |
-| --height            | block height when the specific parameter change proposal becomes effective (parameters to be modified changed to specific values),the specific height must meet: higher than the current block height and lower than or equal to the sum of the current block height and MaxBlockHeightPeriod |
-| --from              | account name specified for sending a transaction  |
-| --home              | account name and the directory where okchaincli is configured
-if it is ~/.okchaincli can ignore the parameters |
-| -b/--broadcast-mode | specific transaction broadcast modes（async、sync、block） |
-
-#### Submit deposit
-
-
-Submit a deposit for an active proposal.
-
-```shell
-$ okchaincli tx gov deposit -h
-
-Submit a deposit for an active proposal. You can
-find the proposal-id by running "<appcli> query gov proposals".
-
-Example:
-  okchaincli tx gov deposit 1 10okt --from mykey
-
-Usage:
-  okchaincli tx gov deposit [proposal-id] [deposit] [flags]
-
-Flags:
-  -a, --account-number uint     The account number of the signing account (offline mode only)
-  -b, --broadcast-mode string   Transaction broadcasting mode (sync|async|block) (default "sync")
-      --dry-run                 ignore the --gas flag and perform a simulation of a transaction, but don't broadcast it
-      --fees string             Fees to pay along with transaction; eg: 1okt
-      --from string             Name or address of private key with which to sign
-      --gas string              gas limit to set per-transaction; set to "auto" to calculate required gas automatically (default 200000) (default "200000")
-      --gas-adjustment float    adjustment factor to be multiplied against the estimate returned by the tx simulation; if the gas limit is set manually this flag is ignored  (default 1)
-      --gas-prices string       Gas prices to determine the transaction fee (e.g. 1okt)
-      --generate-only           Build an unsigned transaction and write it to STDOUT (when enabled, the local Keybase is not accessible and the node operates offline)
-  -h, --help                    help for deposit
-      --indent                  Add indent to JSON response
-      --ledger                  Use a connected Ledger device
-      --memo string             Memo to send along with transaction
-      --node string             <host>:<port> to tendermint rpc interface for this chain (default "tcp://localhost:26657")
-      --sequence uint           The sequence number of the signing account (offline mode only)
-      --trust-node              Trust connected full node (don't verify proofs for responses) (default true)
-  -y, --yes                     Skip tx broadcasting prompt confirmation
-
-Global Flags:
-      --chain-id string   Chain ID of tendermint node
-  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
-      --home string       directory for config and data (default "/Users/admin/.okchaincli")
-  -o, --output string     Output format (text|json) (default "text")
-      --passwd string     Pass word of sender (default "12345678")
-      --trace             print out full stack trace on errors
-```
-
-#### Submit vote
-
-
-Submit a vote for an active proposal. 
-
-```shell
-$ okchaincli tx gov vote -h
-
-Submit a vote for an active proposal. You can
-find the proposal-id by running "<appcli> query gov proposals".
-
-
-Example:
-  okchaincli tx gov vote 1 yes --from mykey
-
-Usage:
-  okchaincli tx gov vote [proposal-id] [option] [flags]
-
-Flags:
-  -a, --account-number uint     The account number of the signing account (offline mode only)
-  -b, --broadcast-mode string   Transaction broadcasting mode (sync|async|block) (default "sync")
-      --dry-run                 ignore the --gas flag and perform a simulation of a transaction, but don't broadcast it
-      --fees string             Fees to pay along with transaction; eg: 1okt
-      --from string             Name or address of private key with which to sign
-      --gas string              gas limit to set per-transaction; set to "auto" to calculate required gas automatically (default 200000) (default "200000")
-      --gas-adjustment float    adjustment factor to be multiplied against the estimate returned by the tx simulation; if the gas limit is set manually this flag is ignored  (default 1)
-      --gas-prices string       Gas prices to determine the transaction fee (e.g. 1okt)
-      --generate-only           Build an unsigned transaction and write it to STDOUT (when enabled, the local Keybase is not accessible and the node operates offline)
-  -h, --help                    help for vote
-      --indent                  Add indent to JSON response
-      --ledger                  Use a connected Ledger device
-      --memo string             Memo to send along with transaction
-      --node string             <host>:<port> to tendermint rpc interface for this chain (default "tcp://localhost:26657")
-      --sequence uint           The sequence number of the signing account (offline mode only)
-      --trust-node              Trust connected full node (don't verify proofs for responses) (default true)
-  -y, --yes                     Skip tx broadcasting prompt confirmation
-
-Global Flags:
-      --chain-id string   Chain ID of tendermint node
-  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
-      --home string       directory for config and data (default "/Users/admin/.okchaincli")
-  -o, --output string     Output format (text|json) (default "text")
-      --passwd string     Pass word of sender (default "12345678")
-      --trace             print out full stack trace on errors
-```
-
-#### Query proposal
-
-##### Query proposal by ID
-
-Query details for a proposal
-
-```shell
-$ okchaincli query gov proposal -h
-
-Query details for a proposal. You can find the
-proposal-id by running "<appcli> query gov proposals".
-
-Example:
-  okchaincli query gov proposal 1
-
-Usage:
-  okchaincli query gov proposal [proposal-id] [flags]
-
-Flags:
-      --height int    Use a specific height to query state at (this can error if the node is pruning state)
-  -h, --help          help for proposal
-      --indent        Add indent to JSON response
-      --ledger        Use a connected Ledger device
-      --node string   <host>:<port> to Tendermint RPC interface for this chain (default "tcp://localhost:26657")
-      --trust-node    Trust connected full node (don't verify proofs for responses)
-
-Global Flags:
-      --chain-id string   Chain ID of tendermint node
-  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
-      --home string       directory for config and data (default "/Users/admin/.okchaincli")
-  -o, --output string     Output format (text|json) (default "text")
-      --passwd string     Pass word of sender (default "12345678")
-      --trace             print out full stack trace on errors
-```
-
-##### Query all proposals
-
-
-Query for a all proposals. 
-
-```shell
-$ okchaincli query gov proposals -h
-
-Query for a all proposals. You can filter the returns with the following flags.
-
-Example:
-  okchaincli query gov proposals --depositor cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
-  okchaincli query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
-  okchaincli query gov proposals --status (DepositPeriod|VotingPeriod|Passed|Rejected)
-
-Usage:
-  okchaincli query gov proposals [flags]
-
-Flags:
-      --depositor string   (optional) filter by proposals deposited on by depositor
-      --height int         Use a specific height to query state at (this can error if the node is pruning state)
-  -h, --help               help for proposals
-      --indent             Add indent to JSON response
-      --ledger             Use a connected Ledger device
-      --limit string       (optional) limit to latest [number] proposals. Defaults to all proposals
-      --node string        <host>:<port> to Tendermint RPC interface for this chain (default "tcp://localhost:26657")
-      --status string      (optional) filter proposals by proposal status, status: deposit_period/voting_period/passed/rejected
-      --trust-node         Trust connected full node (don't verify proofs for responses)
-      --voter string       (optional) filter by proposals voted on by voted
-
-Global Flags:
-      --chain-id string   Chain ID of tendermint node
-  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
-      --home string       directory for config and data (default "/Users/admin/.okchaincli")
-  -o, --output string     Output format (text|json) (default "text")
-      --passwd string     Pass word of sender (default "12345678")
-      --trace             print out full stack trace on errors
-```
-
-##### Query governance parameters
-
-
-Query the all the parameters for the governance process.
-
-```shell
-okchaincli query gov params -h
-
-Query the all the parameters for the governance process.
-
-Example:
-  okchaincli query gov params
-
-Usage:
-  okchaincli query gov params [flags]
-
-Flags:
-      --height int    Use a specific height to query state at (this can error if the node is pruning state)
-  -h, --help          help for params
-      --indent        Add indent to JSON response
-      --ledger        Use a connected Ledger device
-      --node string   <host>:<port> to Tendermint RPC interface for this chain (default "tcp://localhost:26657")
-      --trust-node    Trust connected full node (don't verify proofs for responses)
-
-Global Flags:
-      --chain-id string   Chain ID of tendermint node
-  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
-      --home string       directory for config and data (default "/Users/admin/.okchaincli")
-  -o, --output string     Output format (text|json) (default "text")
-      --passwd string     Pass word of sender (default "12345678")
-      --trace             print out full stack trace on errors
-```
-
-###### Governance module parameters
-
-| Parameters              | Mark                                                                                               
-| :----                   | :----  |                                                                                                   
-| MaxDepositPeriod        | Text/parameter modification/app upgrade deposit period |                                                                         
-| MinDeposit              | Text/parameter modification/app Upgrade proposal maximum deposit <br>If the proposed mortgage exceeds this value, the Voting Period will be effective    |                           |
-| VotingPeriod            | Text/Parameter Modification/app upgrade proposal voting period|                                                                        
-| Quorum                  | weight threshold for voting on the entire network when the voting period ends，for [voting statistics]()|                                                                                     
-| Threshold               | weight threshold for the proportion of Yes votes to all non-abstained votes，for[voting statistics]() |                                                                       
-| Veto                    | weight threshold for the proportion of NoWithVeto votes to all votes，for[voting statistics]()  | 
-| YesInVotePeriod | weight threshold for the proportion of Yes votes to totalBonded before the voting ends |                                                                                                       
-| MaxTxNumPerBlock        | maximum number of transactions contained in each block  |
-
-
-
-
-### slashing module
-
-#### Change target validator state from jailed to unjail
-```sh
-okchaincli tx slashing unjail -h
-unjail a jailed validator:
-
-Example:
-    okchaincli tx slashing unjail --from mykey
-
-Usage:
-    okchaincli tx slashing unjail [flags]
-Flags:
-    --from string             Name or address of private key with which to sign
-```
-
-#### Query jail state of target validator 
-```sh
-okchaincli query slashing signing-info -h
-
-Use a validators' consensus public key to find the signing-info for that validator:
-
-Example:
-    okchaincli query slashing signing-info okchainvalconspub1zcjduepqfhvwcmt7p06fvdgexxhmz0l8c7sgswl7ulv7aulk364x4g5xsw7sr0k2g5
-
-Usage:
-    okchaincli query slashing signing-info [validator-conspub] [flags]
-
-Flags:
-      --height int    Use a specific height to query state at (this can error if the node is pruning state)
-  -h, --help          help for signing-info
-      --indent        Add indent to JSON response
-      --ledger        Use a connected Ledger device
-      --node string   <host>:<port> to Tendermint RPC interface for this chain (default "tcp://localhost:26657")
-      --trust-node    Trust connected full node (don't verify proofs for responses)
-```
-
-####  Query params from slashing module
-```sh
-okchaincli query slashing params -h
-
-Query genesis parameters for the slashing module:
-
-Example:
-    okchaincli query slashing params
-
-Usage:
-    okchaincli query slashing params [flags]
-  
-Flags:
-      --height int    Use a specific height to query state at (this can error if the node is pruning state)
-  -h, --help          help for params
-      --indent        Add indent to JSON response
-      --ledger        Use a connected Ledger device
-      --node string   <host>:<port> to Tendermint RPC interface for this chain (default "tcp://localhost:26657")
-      --trust-node    Trust connected full node (don't verify proofs for responses)
-```
-
-
-## Governance
-
-### 1. Text proposal commands:
-#### Parameter description:  
-
-| Name                | Mark                                                           |
-| :------             | :------                                                               |
-| --title             | title of the proposal                                                        |
-| --description       | description of the proposal (for text proposals only)                                      |
-| --type              | type of the proposal initiated (for text proposals only)                                      |
-| --deposit           | initial deposit specified when the proposal is initiated                                              |
-| --from              | account name specified for sending a transaction                                                |
-| --home              | account name and the directory where okchaincli is configured<br>if it is ~/.okchaincli can ignore the parameters |
-| -b/--broadcast-mode | specific transaction broadcast modes (async, sync and block)                                 |
-
-#### Example:
-```bash
-okchaincli tx gov submit-text-proposal --title="test" --description="test" --type=Text --deposit="80okt" --from alice --home ~/.okchaincli -b block
-```
-#### Successful response:
-```
-{
-  "height": "156",
-  "txhash": "86EB4B2B756E28A4553413DFDB7C0C5DBE2A61C46AE35A1970AF227263BE33F4",
-  "data": "0102",
-  "raw_log": "[{\"msg_index\":\"0\",\"success\":true,\"log\":\"\"}]",
-  "logs": [
-    {
-      "msg_index": "0",
-      "success": true,
-      "log": ""
-    }
-  ],
-  "tags": [
-    {
-      "key": "fee",
-      "value": "0.01250000 okt"
-    },
-    {
-      "key": "proposer",
-      "value": "okchain10q0rk5qnyag7wfvvt7rtphlw589m7frsmyq4ya"
-    },
-    {
-      "key": "proposal-id",
-      "value": "2"
-    }
-  ]
-}
-```
-### 2. Parameter change proposal commands:
-#### Parameter description:
-
-| Name                | Mark                                                                                                                                                                                                                                                             |
-| :------             | :------                                                                                                                                                                                                                                                                 |
-| --title             | title of the proposal                                                                                                                                                                                                                                                          |
-| --type              | type of the proposal initiated (for ParameterChange proposals only)                                                                                                                                                                                                                             |
-| --deposit           | initial deposit specified when the proposal is initiated                                                                                                                                                                                                                                                |
-| --param             | specific parameters and values to be modified (gov/MinDeposit=1000okt<br>modify the MinDeposit parameters in the module to be governed to 1000okt. <br> Refer to the parameters that can be modified for each module [link](../../governance/parameter.html#id1) |
-| --height            | block height when the specific parameter change proposal becomes effective (parameters to be modified changed to specific values), <br>the specific height must meet: higher than the current block height and lower than or equal to the sum of the current block height and [MaxBlockHeightPeriod](../../concepts/gov.html#id5)                                                                                                  |
-| --from              | account name specified for sending a transaction                                                                                                                                                                                                                                                  |
-| --home              | account name and the directory where okchaincli is configured<br>if it is ~/.okchaincli can ignore the parameters                                                                                                                                                                                                   |
-| -b/--broadcast-mode | specific transaction broadcast modes (async, sync and block)                                                                                                                                                                                                                                  |
-
-#### Example:
-```bash
-okchaincli tx gov submit-param-change-proposal --title="Change gov/MinDeposit" --type="ParameterChange" --deposit="60okt" --from alice --param='gov/MinDeposit=1000okt' --height=1000 -b block
-```
-#### Successful response:
-```
-{
-  "height": "723",
-  "txhash": "D24E9B7467325D8F77EEB3F9D8A34F27C6D1C2BB2BCA752FB0E2112A6119F2FB",
-  "data": "0103",
-  "raw_log": "[{\"msg_index\":\"0\",\"success\":true,\"log\":\"\"}]",
-  "logs": [
-    {
-      "msg_index": "0",
-      "success": true,
-      "log": ""
-    }
-  ],
-  "tags": [
-    {
-      "key": "fee",
-      "value": "0.01250000 okt"
-    },
-    {
-      "key": "proposer",
-      "value": "okchain10q0rk5qnyag7wfvvt7rtphlw589m7frsmyq4ya"
-    },
-    {
-      "key": "proposal-id",
-      "value": "3"
-    },
-    {
-      "key": "param",
-      "value": "[{\"subspace\":\"gov\",\"key\":\"MinDeposit\",\"value\":\"1000okt\"}]"
-    }
-  ]
-}
-```
-
-### 3. Version upgrade proposal commands:
-Please refer to [link](../governance/upgrade.html)
-
-### 4. Proposal deposit commands:
-#### Example:
-Deposit the specific proposal through proposal id
-```bash
-okchaincli tx gov deposit 1 500okt --from alice --home ~/.okchaincli/ -b block
-```
-#### Successful response:
-```
-{
-  "height": "1328",
-  "txhash": "FBFB981D1B5CD1C4FDE2A60D3EA1CB5C5F7E8DDF7AA54CCA325B8896E990C46A",
-  "raw_log": "[{\"msg_index\":\"0\",\"success\":true,\"log\":\"\"}]",
-  "logs": [
-    {
-      "msg_index": "0",
-      "success": true,
-      "log": ""
-    }
-  ],
-  "tags": [
-    {
-      "key": "fee",
-      "value": "0.01250000 okt"
-    },
-    {
-      "key": "depositor",
-      "value": "okchain10q0rk5qnyag7wfvvt7rtphlw589m7frsmyq4ya"
-    },
-    {
-      "key": "proposal-id",
-      "value": "4"
-    },
-    {
-      "key": "voting-period-start",
-      "value": "4"
-    }
-  ]
-}
-```
-### 5. Proposal voting commands:
-#### Example:
-Vote for the specific proposal through proposal id (Yes, No, Abstain or NoWithVeto)
-
-```bash
-okchaincli tx gov vote 2 Yes --from alice --home ~/.okchaincli/ -b block
-```
-#### Successful response:
-```
-{
-  "height": "1550",
-  "txhash": "7E62A12E93FFBA280E814D4DE3627FD1015C8B711EBAB6A4C202232B338526F6",
-  "raw_log": "[{\"msg_index\":\"0\",\"success\":true,\"log\":\"\"}]",
-  "logs": [
-    {
-      "msg_index": "0",
-      "success": true,
-      "log": ""
-    }
-  ],
-  "tags": [
-    {
-      "key": "fee",
-      "value": "0.01250000 okt"
-    },
-    {
-      "key": "voter",
-      "value": "okchain1svzxp4ts5le2s4zugx34ajt6shz2hg42p0e6tw"
-    },
-    {
-      "key": "proposal-id",
-      "value": "4"
-    },
-    {
-      "key": "proposal-status",
-      "value": "Passed"
-    }
-  ]
-}
-```
-### 6. Proposal query commands:
-#### Query specific proposals:
-##### Example:
-Query the proposal through proposal id
-```bash
-okchaincli query gov proposal 4 --home ~/.okchaincli/
-```
-#### Successful response:
-```
-{
-  "type": "gov/DexListProposal",
-  "value": {
-    "BasicProposal": {
-      "proposal_id": "4",
-      "title": "list bcoin-7a4/okt",
-      "description": "",
-      "proposal_type": "DexList",
-      "proposal_status": "Passed",
-      "tally_result": {
-        "yes": "100000000",
-        "abstain": "0",
-        "no": "0",
-        "no_with_veto": "0"
-      },
-      "submit_time": "2019-07-29T03:25:36.759218374Z",
-      "deposit_end_time": "2019-07-30T03:25:36.759218374Z",
-      "total_deposit": [
-        {
-          "denom": "okt",
-          "amount": "21000.00000000"
-        }
-      ],
-      "voting_start_time": "2019-07-29T03:31:43.90917706Z",
-      "voting_end_time": "2019-08-01T03:31:43.90917706Z"
-    },
-    "proposer": "okchain10q0rk5qnyag7wfvvt7rtphlw589m7frsmyq4ya",
-    "list_asset": "bcoin-a69",
-    "quote_asset": "okt",
-    "init_price": "2500.25000000",
-    "block_height": "0",
-    "max_price_digit": "4",
-    "max_size_digit": "4",
-    "min_trade_size": "0.001",
-    "dex_list_start_time": "2019-07-29T03:36:57.647117542Z",
-    "dex_list_end_time": "2019-07-30T03:36:57.647117542Z"
-  }
-}
-```
-#### Query all proposals:
-##### Example:
-```bash
-okchaincli query gov proposals --home ~/.okchaincli/
-```
-##### Successful response:
-```
-[
-  {
-    "type": "gov/TextProposal",
-    "value": {
-      "BasicProposal": {
-        "proposal_id": "1",
-        "title": "test",
-        "description": "test",
-        "proposal_type": "Text",
-        "proposal_status": "DepositPeriod",
-        "tally_result": {
-          "yes": "0",
-          "abstain": "0",
-          "no": "0",
-          "no_with_veto": "0"
-        },
-        "submit_time": "2019-07-29T03:03:41.765548835Z",
-        "deposit_end_time": "2019-07-30T03:03:41.765548835Z",
-        "total_deposit": [
-          {
-            "denom": "okt",
-            "amount": "80.00000000"
-          }
-        ],
-        "voting_start_time": "0001-01-01T00:00:00Z",
-        "voting_end_time": "0001-01-01T00:00:00Z"
-      }
-    }
-  },
-  {
-    "type": "gov/TextProposal",
-    "value": {
-      "BasicProposal": {
-        "proposal_id": "2",
-        "title": "test",
-        "description": "test",
-        "proposal_type": "Text",
-        "proposal_status": "DepositPeriod",
-        "tally_result": {
-          "yes": "0",
-          "abstain": "0",
-          "no": "0",
-          "no_with_veto": "0"
-        },
-        "submit_time": "2019-07-29T03:05:59.446787436Z",
-        "deposit_end_time": "2019-07-30T03:05:59.446787436Z",
-        "total_deposit": [
-          {
-            "denom": "okt",
-            "amount": "80.00000000"
-          }
-        ],
-        "voting_start_time": "0001-01-01T00:00:00Z",
-        "voting_end_time": "0001-01-01T00:00:00Z"
-      }
-    }
-  },
-  {
-    "type": "gov/ParameterProposal",
-    "value": {
-      "BasicProposal": {
-        "proposal_id": "3",
-        "title": "Change gov/MinDeposit",
-        "description": "",
-        "proposal_type": "ParameterChange",
-        "proposal_status": "DepositPeriod",
-        "tally_result": {
-          "yes": "0",
-          "abstain": "0",
-          "no": "0",
-          "no_with_veto": "0"
-        },
-        "submit_time": "2019-07-29T03:18:21.761155019Z",
-        "deposit_end_time": "2019-07-30T03:18:21.761155019Z",
-        "total_deposit": [
-          {
-            "denom": "okt",
-            "amount": "60.00000000"
-          }
-        ],
-        "voting_start_time": "0001-01-01T00:00:00Z",
-        "voting_end_time": "0001-01-01T00:00:00Z"
-      },
-      "params": [
-        {
-          "subspace": "gov",
-          "key": "MinDeposit",
-          "value": "1000okt"
-        }
-      ],
-      "height": "1000"
-    }
-  }
-]
-```
-#### Query governance parameters:
-##### Example:
-```bash
-okchaincli query gov params --home ~/.okchaincli/
-```
-##### Successful response:
-```
-{
-  "max_deposit_period": "86400000000000",
-  "min_deposit": [
-    {
-      "denom": "okt",
-      "amount": "100.00000000"
-    }
-  ],
-  "voting_period": "259200000000000",
-  "dex_list_max_deposit_period": "86400000000000",
-  "dex_list_min_deposit": [
-    {
-      "denom": "okt",
-      "amount": "20000.00000000"
-    }
-  ],
-  "dex_list_voting_period": "259200000000000",
-  "dex_list_vote_fee": [
-    {
-      "denom": "okt",
-      "amount": "0.00000000"
-    }
-  ],
-  "dex_list_max_block_height": "10000",
-  "dex_list_fee": [
-    {
-      "denom": "okt",
-      "amount": "100000.00000000"
-    }
-  ],
-  "dex_list_expire_time": "86400000000000",
-  "quorum": "0.33400000",
-  "threshold": "0.50000000",
-  "veto": "0.33400000",
-  "max_block_height_period": "100000",
-  "max_tx_num_per_block": "2000"
-}
-```
-##### Query governance parameters:
-
-| Parameters              | Mark                                                                                               |
-| :----                   | :----                                                                                                      |
-| MaxDepositPeriod        | Text/ParameterChange/deposit period for app upgrade proposal                                                                       |
-| MinDeposit              | Text/ParameterChange/deposit limit for app upgrade proposal<br>if the proposal deposit exceeds this value, the Voting Period will be effective                               |
-| VotingPeriod            | Text/ParameterChange/voting period for app upgrade proposal                                                                         |
-| Quorum                  | weight threshold for voting on the entire network used for [voting statistics](../concepts/gov.html#id4)                                                                                     |
-| Threshold               | weight threshold for the proportion of Yes votes to all non-abstained votes used for [voting statistics](../concepts/gov.html#id4)                                                                        |
-| Veto                    | weight threshold for the proportion of NoWithVeto votes to all votes used for [voting statistics](../concepts/gov.html#id4)                                                                       |
-| MaxBlockHeightPeriod    | parameter change proposal specifies that the automatically effective block height does not exceed the sum of the current block height and MaxBlockHeightPeriod                                     |
-| MaxTxNumPerBlock        | maximum number of transactions contained in each block                                                                                 |
 
 
 ## Backend 
@@ -3966,4 +1935,887 @@ okchaincli backend tickers -p mycoin_okt
   "msg": ""
 }
 ```
+
+
+## Staking
+
+### Create, destroy, edit-validator
+
+#### Create validator
+
+
+Create a new validator with own keys
+
+```shell
+$ okchaincli tx staking create-validator -h
+
+Example:
+    okchaincli tx staking create-validator --moniker $MONIKER --pubkey $PUBKEY --from mykey
+    
+Usage:
+    okchaincli tx staking create-validator [flags]
+
+Flags:
+    -- moniker  	The validator's name
+    -- pubkey  		The Bech32 encoded PubKey of the validator  
+```
+
+#### Destroy validator
+
+Unbonding of MSD causes the validator to enter unbonding from the bonded state while jailed, and the operation will not affect the voting of other delegators on this validator.
+
+After the operation is performed, the delegator can still withdraw the vote (unbond or change the vote) from the validator. Once the number of votes and MSD of the validator are both 0, the validator will be completely removed from the validator set.
+
+
+The Unbonded MSD has a freeze period of 14 days (the same as the normal unboundingtime parameter)
+
+
+
+Destroy a validator and withdraw the self-delegation
+
+```shell
+$ okchaincli tx staking destroy-validator -h
+  
+Example:
+    okchaincli tx staking destroy-validator --from mykey
+    
+Usage:
+    okchaincli tx staking destroy-validator [flags]
+
+```
+
+#### Edit validator
+
+
+Edit the detail info of a validator
+
+```shell
+$ okchaincli tx staking edit-validator -h
+
+Example:
+    okchaincli tx staking edit-validator --moniker "my new name" --identity "http://mynewwebsite/pic/newlogo.jpg" --website "http://mynewwebsites" --details "my new slogans" --from mykey
+	
+Usage:
+    okchaincli tx staking edit-validator [flags]
+
+Flags:
+	  -- moniker		The validator's name (default "[do-not-modify]")
+	  -- identity		The  (optional) identity signature (ex. UPort or Keybase) (default "[do-not-modify]")
+	  -- website		The validator's (optional) website (default "[do-not-modify]")
+	  -- details 		The validator's (optional) details (default "[do-not-modify]")
+```
+
+### Delegate & vote
+
+#### Delegate
+
+
+Delegate an amount of okt
+
+```shell
+$ okchaincli tx staking delegate -h
+
+Example:
+	  okchaincli tx staking delegate 1024.1024okt --from mykey
+	  
+Usage:
+    okchaincli tx staking delegate [amount] [flags]
+    
+
+```
+
+#### Vote 
+
+Vote on one or more validator(s) by delegate okt
+
+Vote on one or more validator(s)
+
+```shell
+$ okchaincli tx staking vote -h
+
+ 
+Example:
+    okchaincli tx staking vote okchainvaloper1alq9na49n9yycysh889rl90g9nhe58lcs50wu5,okchainvaloper1svzxp4ts5le2s4zugx34ajt6shz2hg42a3gl7g,okchainvaloper10q0rk5qnyag7wfvvt7rtphlw589m7frs863s3m,okchainvaloper1g7znsf24w4jc3xfca88pq9kmlyjdare6mph5rx --from mykey
+
+Usage:
+    okchaincli tx staking vote [validator-addr1, validator-addr2, validator-addr3, ... validator-addrN] [flags]
+```
+
+#### Unbond
+
+Unbond the deposit token while canceling all the votes, it takes 14 days for unbonding the tokens.
+
+  
+   - [ ] allow the user to exchange votes into tokens multiple times, and the number of votes allowed to be withdrawan from deposit can be 0.001 \ ~ n (total number of votes owned by the user)
+   - [ ] if the user status is "voted", after the command is executed, the number of votes that have been voted will be automatically updated and deducted. Essentially, the new votes will be used for re voting
+   - [ ] if the user status is "voted", execute the command and withdraw all the votes, essentially execute the unbond behavior
+   - [ ] if the user's status is "not voted", after the command is executed, the votes will not be affected. After 14 days, it will be converted into token and returned to the user's account
+   - [ ] users are allowed to perform the "unbond" operation for many times, but it only takes effect for the last time, and the last unbond operation automatically accumulates the transaction amount in the process of unbond
+   
+Unbond shares and withdraw the same amount of votes
+
+```shell
+$ okchaincli tx staking unbond -h
+
+Example:
+    okchaincli tx staking unbond 1024.1024okt --from mykey
+
+Usage:
+    okchaincli tx staking unbond [amount] [flags]
+
+```
+
+#### query delegator & vote information
+
+
+Query the information of delegations and all votes recently made by a delegator
+
+```shell
+$ okchaincli query staking delegator -h
+
+Example:
+    okchaincli query staking delegator okchain1hw4r48aww06ldrfeuq2v438ujnl6alszzzqpph
+    
+Usage:
+    okchaincli query staking delegator [address] [flags]
+	
+```
+
+#### Query the votes info on a specific validator
+
+
+Query the information of all votes recently made to a validator
+
+```shell
+$ okchaincli query staking votes-to -h
+
+Example:
+	  okchaincli query staking votes-to okchainvaloper1alq9na49n9yycysh889rl90g9nhe58lcs50wu5
+	  
+Usage:
+    okchaincli query staking votes-to [validator-addr] [flags]
+
+```
+
+#### Query others
+
+```
+Usage:
+    okchaincli query staking [command] [flags]
+
+Available Commands:
+    validator                  Query a validator
+    validators                 Query for all validators
+    params                     Query the current staking parameters information
+    pool                       Query the current staking pool values
+```
+
+### Proxy vote
+
+#### Register proxy
+
+Used for register as a proxy
+
+Become a proxy by registration
+
+```shell
+$ okchaincli tx staking proxy reg -h
+
+Example:
+	  okchaincli tx staking proxy reg --from mykey
+	  
+Usage:
+	  okchaincli tx staking proxy reg [flags]
+
+```
+
+#### Unregister proxy
+
+
+Unregister the proxy identity
+
+```shell
+$ okchaincli tx staking proxy unreg -h
+
+Example:
+	  okchaincli tx staking proxy unreg --from mykey
+	  
+Usage:
+    okchaincli tx staking proxy unreg [flags]
+
+```
+
+#### Bind proxy
+
+
+Bind proxy relationship
+
+```shell
+$ okchaincli tx staking proxy bind -h
+
+Example:
+	  okchaincli tx staking proxy bind okchain1hw4r48aww06ldrfeuq2v438ujnl6alszzzqpph --from mykey
+	  
+Usage:
+    okchaincli tx staking proxy bind [flags]
+
+```
+
+#### Unbind proxy
+
+
+Unbind proxy relationship
+
+```shell
+$ okchaincli tx staking proxy unbind -h
+
+Example:
+	  okchaincli tx staking proxy unbind okchain1hw4r48aww06ldrfeuq2v438ujnl6alszzzqpph --from mykey
+	  
+Usage:
+    okchaincli tx staking proxy unbind [flags]
+
+```
+
+#### Query proxy
+
+
+Query the addresses of delegators by a specific proxy
+
+```shell
+$ okchaincli query staking proxy -h
+
+Example:
+	  okchaincli query staking proxy okchain1hw4r48aww06ldrfeuq2v438ujnl6alszzzqpph
+	  
+Usage:
+    okchaincli query staking proxy [address] [flags]
+
+
+```
+
+
+## Distribution
+### Withdraw rewards
+
+
+Withdraw rewards coming from fees to the validator account
+
+```shell
+$ okchaincli tx distr withdraw-rewards -h
+
+Example：
+    okchaincli tx distr withdraw-rewards okchainvaloper1g7znsf24w4jc3xfca88pq9kmlyjdare6mph5rx --from ${name} --node ${url}
+
+Usage: 
+    okchaincli tx distr withdraw-rewards [validator-address] [flags]
+
+
+Flags：
+	--from ${name} 指定命令发送者账户
+	--node ${url}  节点地址
+```
+
+
+
+### Query distribution parameters
+
+Execution parameters for distribution module
+
+Query distribution parameters
+
+```shell
+$ okchaincli query distr params -h
+
+Example：
+    okchaincli query distr params --node ${url}
+    
+Usage: 
+    okchaincli query distr params [flags]
+
+Flags：
+	--node ${url}  validator address
+```
+
+### Query community pool
+
+
+Query all coins in the community pool which is under Governance control.
+
+```shell
+$ okchaincli query distr community-pool -h
+
+Example：
+    okchaincli query distr community-pool --node ${url}
+    
+Usage: 
+    okchaincli query distr community-pool [flags]
+
+Flags：
+	--node ${url}  节点地址
+```
+
+### Query validator commission rewards from delegators
+
+Query validator commission rewards from delegators to that validator.
+
+```shell
+$ okchaincli query distr commission -h
+
+Example：
+    okchaincli query distr commission okchainvaloper1g7znsf24w4jc3xfca88pq9kmlyjdare6mph5rx --node ${url}
+    
+Usage: 
+    okchaincli query distr commission [validator] [flags]
+
+Flags：
+	--node ${url}  validator address
+```
+
+
+## Governance
+
+### Dex delist proposal
+
+
+Submit a dex delist proposal along with an initial deposit.
+
+```shell
+$ okchaincli tx gov submit-proposal delist-proposal -h
+
+Submit a dex delist proposal along with an initial deposit.
+The proposal details must be supplied via a JSON file.
+
+Example:
+  okchaincli tx gov submit-proposal delist-proposal <path/to/proposal.json> --from=<key_or_address>
+
+Where proposal.json contains:
+
+{
+ "title": "delist xxx/okt",
+ "description": "delist asset from dex",
+ "base_asset": "xxx",
+ "quote_asset": "okt",
+ "deposit": [
+   {
+     "denom": "okt",
+     "amount": "100"
+   }
+ ]
+}
+
+Usage:
+  okchaincli tx gov submit-proposal delist-proposal [proposal-file] [flags]
+
+Flags:
+  -a, --account-number uint     The account number of the signing account (offline mode only)
+  -b, --broadcast-mode string   Transaction broadcasting mode (sync|async|block) (default "sync")
+      --dry-run                 ignore the --gas flag and perform a simulation of a transaction, but don't broadcast it
+      --fees string             Fees to pay along with transaction; eg: 1okt
+      --from string             Name or address of private key with which to sign
+      --gas string              gas limit to set per-transaction; set to "auto" to calculate required gas automatically (default 200000) (default "200000")
+      --gas-adjustment float    adjustment factor to be multiplied against the estimate returned by the tx simulation; if the gas limit is set manually this flag is ignored  (default 1)
+      --gas-prices string       Gas prices to determine the transaction fee (e.g. 1okt)
+      --generate-only           Build an unsigned transaction and write it to STDOUT (when enabled, the local Keybase is not accessible and the node operates offline)
+  -h, --help                    help for delist-proposal
+      --indent                  Add indent to JSON response
+      --ledger                  Use a connected Ledger device
+      --memo string             Memo to send along with transaction
+      --node string             <host>:<port> to tendermint rpc interface for this chain (default "tcp://localhost:26657")
+      --sequence uint           The sequence number of the signing account (offline mode only)
+      --trust-node              Trust connected full node (don't verify proofs for responses) (default true)
+  -y, --yes                     Skip tx broadcasting prompt confirmation
+
+Global Flags:
+      --chain-id string   Chain ID of tendermint node
+  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
+      --home string       directory for config and data (default "/Users/admin/.okchaincli")
+  -o, --output string     Output format (text|json) (default "text")
+      --passwd string     Pass word of sender (default "12345678")
+      --trace             print out full stack trace on errors
+```
+
+### Text proposal
+
+
+Submit a proposal along with an initial deposit.
+
+```shell
+$ okchaincli tx gov  submit-proposal -h
+Submit a proposal along with an initial deposit.
+Proposal title, description, type and deposit can be given directly or through a proposal JSON file.
+
+Example:
+  okchaincli tx gov submit-proposal --proposal="path/to/proposal.json" --from mykey
+
+Where proposal.json contains:
+
+{
+  "title": "Test Proposal",
+  "description": "My awesome proposal",
+  "type": "Text",
+  "deposit": "10okt"
+}
+
+Which is equivalent to:
+
+  okchaincli tx gov submit-proposal --title="Test Proposal" --description="My awesome proposal" --type="Text" \
+	--deposit="10okt" --from mykey
+
+Usage:
+  okchaincli tx gov submit-proposal [flags]
+  okchaincli tx gov submit-proposal [command]
+
+Available Commands:
+  upgrade              submit a app upgrade proposal
+  param-change         Submit a parameter change proposal
+  delist-proposal      Submit a dex delist proposal
+  community-pool-spend Submit a community pool spend proposal
+
+Flags:
+  -a, --account-number uint     The account number of the signing account (offline mode only)
+  -b, --broadcast-mode string   Transaction broadcasting mode (sync|async|block) (default "sync")
+      --deposit string          deposit of proposal
+      --description string      description of proposal
+      --dry-run                 ignore the --gas flag and perform a simulation of a transaction, but don't broadcast it
+      --fees string             Fees to pay along with transaction; eg: 1okt
+      --from string             Name or address of private key with which to sign
+      --gas string              gas limit to set per-transaction; set to "auto" to calculate required gas automatically (default 200000) (default "200000")
+      --gas-adjustment float    adjustment factor to be multiplied against the estimate returned by the tx simulation; if the gas limit is set manually this flag is ignored  (default 1)
+      --gas-prices string       Gas prices to determine the transaction fee (e.g. 1okt)
+      --generate-only           Build an unsigned transaction and write it to STDOUT (when enabled, the local Keybase is not accessible and the node operates offline)
+  -h, --help                    help for submit-proposal
+      --indent                  Add indent to JSON response
+      --ledger                  Use a connected Ledger device
+      --memo string             Memo to send along with transaction
+      --node string             <host>:<port> to tendermint rpc interface for this chain (default "tcp://localhost:26657")
+      --proposal string         proposal file path (if this path is given, other proposal flags are ignored)
+      --sequence uint           The sequence number of the signing account (offline mode only)
+      --title string            title of proposal
+      --trust-node              Trust connected full node (don't verify proofs for responses) (default true)
+      --type string             proposalType of proposal, types: text/parameter_change/software_upgrade
+  -y, --yes                     Skip tx broadcasting prompt confirmation
+
+Global Flags:
+      --chain-id string   Chain ID of tendermint node
+  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
+      --home string       directory for config and data (default "/Users/admin/.okchaincli")
+  -o, --output string     Output format (text|json) (default "text")
+      --passwd string     Pass word of sender (default "12345678")
+      --trace             print out full stack trace on errors
+
+Use "okchaincli tx gov submit-proposal [command] --help" for more information about a command.
+```
+##### Parameter description：
+
+| Name                | Description  |
+| :------             | :------  |
+| --title             | title of the proposal  |
+| --description       | description of the proposal (for text proposals only) 
+| --type              | type of the proposal initiated (for text proposals only) |
+| --deposit           | initial deposit specified when the proposal is initiated  |
+| --from              | account name specified for sending a transaction |
+| --home              | account name and the directory where okchaincli is configured
+if it is ~/.okchaincli can ignore the parameters |
+| -b/--broadcast-mode | specific transaction broadcast modes（async、sync、block）|
+
+### Change parameter proposal
+
+
+Submit a parameter modification proposal along with an initial deposit.
+
+```shell
+$ okchaincli tx gov  submit-proposal param-change -h
+
+Submit a parameter modification proposal along with an initial deposit.
+The proposal details must be supplied via a JSON file. For values that contains
+objects, only non-empty fields will be updated.
+
+IMPORTANT: Currently parameter changes are evaluated but not validated, so it is
+very important that any "value" change is valid (ie. correct type and within bounds)
+for its respective parameter, eg. "MaxValidators" should be an integer and not a decimal.
+
+Proper vetting of a parameter change proposal should prevent this from happening
+(no deposits should occur during the governance process), but it should be noted
+regardless.
+
+Example:
+  okchaincli tx gov submit-proposal param-change <path/to/proposal.json> --from=<key_or_address>
+
+Where proposal.json contains:
+
+{
+  "title": "Staking Param Change",
+  "description": "Update max validators",
+  "changes": [
+    {
+      "subspace": "staking",
+      "key": "MaxValidators",
+      "value": 105
+    }
+  ],
+  "deposit": [
+    {
+      "denom": common.NativeToken,
+      "amount": "10000"
+    }
+  ],
+  "height": "1000"
+}
+
+Usage:
+  okchaincli tx gov submit-proposal param-change [proposal-file] [flags]
+
+Flags:
+  -a, --account-number uint     The account number of the signing account (offline mode only)
+  -b, --broadcast-mode string   Transaction broadcasting mode (sync|async|block) (default "sync")
+      --dry-run                 ignore the --gas flag and perform a simulation of a transaction, but don't broadcast it
+      --fees string             Fees to pay along with transaction; eg: 1 okt
+      --from string             Name or address of private key with which to sign
+      --gas string              gas limit to set per-transaction; set to "auto" to calculate required gas automatically (default 200000) (default "200000")
+      --gas-adjustment float    adjustment factor to be multiplied against the estimate returned by the tx simulation; if the gas limit is set manually this flag is ignored  (default 1)
+      --gas-prices string       Gas prices to determine the transaction fee (e.g. 1okt)
+      --generate-only           Build an unsigned transaction and write it to STDOUT (when enabled, the local Keybase is not accessible and the node operates offline)
+  -h, --help                    help for param-change
+      --indent                  Add indent to JSON response
+      --ledger                  Use a connected Ledger device
+      --memo string             Memo to send along with transaction
+      --node string             <host>:<port> to tendermint rpc interface for this chain (default "tcp://localhost:26657")
+      --sequence uint           The sequence number of the signing account (offline mode only)
+      --trust-node              Trust connected full node (don't verify proofs for responses) (default true)
+  -y, --yes                     Skip tx broadcasting prompt confirmation
+
+Global Flags:
+      --chain-id string   Chain ID of tendermint node
+  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
+      --home string       directory for config and data (default "/Users/admin/.okchaincli")
+  -o, --output string     Output format (text|json) (default "text")
+      --passwd string     Pass word of sender (default "12345678")
+      --trace             print out full stack trace on errors
+```
+
+##### Parameter description
+
+| Name                | Description |
+| :------             | :------ |
+| --title             | title of the proposal  |
+| --type              | type of the proposal initiated (for parameterchange proposals only) |
+| --deposit           | initial deposit specified when the proposal is initiated |
+| --param             | specific parameters and values to be modified (gov/MinDeposit=1000okt
+modify the MinDeposit parameters in the module to be governed to 1000okt. |
+| --height            | block height when the specific parameter change proposal becomes effective (parameters to be modified changed to specific values),the specific height must meet: higher than the current block height and lower than or equal to the sum of the current block height and MaxBlockHeightPeriod |
+| --from              | account name specified for sending a transaction  |
+| --home              | account name and the directory where okchaincli is configured
+if it is ~/.okchaincli can ignore the parameters |
+| -b/--broadcast-mode | specific transaction broadcast modes（async、sync、block） |
+
+### Submit deposit
+
+
+Submit a deposit for an active proposal.
+
+```shell
+$ okchaincli tx gov deposit -h
+
+Submit a deposit for an active proposal. You can
+find the proposal-id by running "<appcli> query gov proposals".
+
+Example:
+  okchaincli tx gov deposit 1 10okt --from mykey
+
+Usage:
+  okchaincli tx gov deposit [proposal-id] [deposit] [flags]
+
+Flags:
+  -a, --account-number uint     The account number of the signing account (offline mode only)
+  -b, --broadcast-mode string   Transaction broadcasting mode (sync|async|block) (default "sync")
+      --dry-run                 ignore the --gas flag and perform a simulation of a transaction, but don't broadcast it
+      --fees string             Fees to pay along with transaction; eg: 1okt
+      --from string             Name or address of private key with which to sign
+      --gas string              gas limit to set per-transaction; set to "auto" to calculate required gas automatically (default 200000) (default "200000")
+      --gas-adjustment float    adjustment factor to be multiplied against the estimate returned by the tx simulation; if the gas limit is set manually this flag is ignored  (default 1)
+      --gas-prices string       Gas prices to determine the transaction fee (e.g. 1okt)
+      --generate-only           Build an unsigned transaction and write it to STDOUT (when enabled, the local Keybase is not accessible and the node operates offline)
+  -h, --help                    help for deposit
+      --indent                  Add indent to JSON response
+      --ledger                  Use a connected Ledger device
+      --memo string             Memo to send along with transaction
+      --node string             <host>:<port> to tendermint rpc interface for this chain (default "tcp://localhost:26657")
+      --sequence uint           The sequence number of the signing account (offline mode only)
+      --trust-node              Trust connected full node (don't verify proofs for responses) (default true)
+  -y, --yes                     Skip tx broadcasting prompt confirmation
+
+Global Flags:
+      --chain-id string   Chain ID of tendermint node
+  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
+      --home string       directory for config and data (default "/Users/admin/.okchaincli")
+  -o, --output string     Output format (text|json) (default "text")
+      --passwd string     Pass word of sender (default "12345678")
+      --trace             print out full stack trace on errors
+```
+
+### Submit vote
+
+
+Submit a vote for an active proposal. 
+
+```shell
+$ okchaincli tx gov vote -h
+
+Submit a vote for an active proposal. You can
+find the proposal-id by running "<appcli> query gov proposals".
+
+
+Example:
+  okchaincli tx gov vote 1 yes --from mykey
+
+Usage:
+  okchaincli tx gov vote [proposal-id] [option] [flags]
+
+Flags:
+  -a, --account-number uint     The account number of the signing account (offline mode only)
+  -b, --broadcast-mode string   Transaction broadcasting mode (sync|async|block) (default "sync")
+      --dry-run                 ignore the --gas flag and perform a simulation of a transaction, but don't broadcast it
+      --fees string             Fees to pay along with transaction; eg: 1okt
+      --from string             Name or address of private key with which to sign
+      --gas string              gas limit to set per-transaction; set to "auto" to calculate required gas automatically (default 200000) (default "200000")
+      --gas-adjustment float    adjustment factor to be multiplied against the estimate returned by the tx simulation; if the gas limit is set manually this flag is ignored  (default 1)
+      --gas-prices string       Gas prices to determine the transaction fee (e.g. 1okt)
+      --generate-only           Build an unsigned transaction and write it to STDOUT (when enabled, the local Keybase is not accessible and the node operates offline)
+  -h, --help                    help for vote
+      --indent                  Add indent to JSON response
+      --ledger                  Use a connected Ledger device
+      --memo string             Memo to send along with transaction
+      --node string             <host>:<port> to tendermint rpc interface for this chain (default "tcp://localhost:26657")
+      --sequence uint           The sequence number of the signing account (offline mode only)
+      --trust-node              Trust connected full node (don't verify proofs for responses) (default true)
+  -y, --yes                     Skip tx broadcasting prompt confirmation
+
+Global Flags:
+      --chain-id string   Chain ID of tendermint node
+  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
+      --home string       directory for config and data (default "/Users/admin/.okchaincli")
+  -o, --output string     Output format (text|json) (default "text")
+      --passwd string     Pass word of sender (default "12345678")
+      --trace             print out full stack trace on errors
+```
+
+### withdraw rewards
+
+Send a proposal used for withdraw rewards from community pool
+
+```shell
+$ okchaincli tx gov submit-proposal community-pool-spend -h
+
+Example:
+	okchaincli tx gov submit-proposal community-pool-spend <path/to/proposal.json> --from=<key_or_address>
+
+Where proposal.json contains:
+{
+  "title": "Community Pool Spend",
+  "description": "Pay me some okt!",
+  "recipient": "okchain5afhd6gxevu37mkqcvvsj8qeylhn0rz46zdlq",
+  "amount": [
+    {
+      "denom": "okt",
+      "amount": "10000"
+    }
+  ],
+  "deposit": [
+    {
+      "denom": "okt",
+      "amount": "10000"
+    }
+  ]
+}
+
+Usage: 
+    okchaincli tx gov submit-proposal community-pool-spend [proposal-file] [flags]
+
+Flags：
+	--from ${name} 指定命令发送者账户 
+	--node ${url}  节点地址 nodes address 
+```
+
+### Query proposal
+
+#### Query proposal by ID
+
+Query details for a proposal
+
+```shell
+$ okchaincli query gov proposal -h
+
+Query details for a proposal. You can find the
+proposal-id by running "<appcli> query gov proposals".
+
+Example:
+  okchaincli query gov proposal 1
+
+Usage:
+  okchaincli query gov proposal [proposal-id] [flags]
+
+Flags:
+      --height int    Use a specific height to query state at (this can error if the node is pruning state)
+  -h, --help          help for proposal
+      --indent        Add indent to JSON response
+      --ledger        Use a connected Ledger device
+      --node string   <host>:<port> to Tendermint RPC interface for this chain (default "tcp://localhost:26657")
+      --trust-node    Trust connected full node (don't verify proofs for responses)
+
+Global Flags:
+      --chain-id string   Chain ID of tendermint node
+  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
+      --home string       directory for config and data (default "/Users/admin/.okchaincli")
+  -o, --output string     Output format (text|json) (default "text")
+      --passwd string     Pass word of sender (default "12345678")
+      --trace             print out full stack trace on errors
+```
+
+#### Query all proposals
+
+
+Query for a all proposals. 
+
+```shell
+$ okchaincli query gov proposals -h
+
+Query for a all proposals. You can filter the returns with the following flags.
+
+Example:
+  okchaincli query gov proposals --depositor cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+  okchaincli query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+  okchaincli query gov proposals --status (DepositPeriod|VotingPeriod|Passed|Rejected)
+
+Usage:
+  okchaincli query gov proposals [flags]
+
+Flags:
+      --depositor string   (optional) filter by proposals deposited on by depositor
+      --height int         Use a specific height to query state at (this can error if the node is pruning state)
+  -h, --help               help for proposals
+      --indent             Add indent to JSON response
+      --ledger             Use a connected Ledger device
+      --limit string       (optional) limit to latest [number] proposals. Defaults to all proposals
+      --node string        <host>:<port> to Tendermint RPC interface for this chain (default "tcp://localhost:26657")
+      --status string      (optional) filter proposals by proposal status, status: deposit_period/voting_period/passed/rejected
+      --trust-node         Trust connected full node (don't verify proofs for responses)
+      --voter string       (optional) filter by proposals voted on by voted
+
+Global Flags:
+      --chain-id string   Chain ID of tendermint node
+  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
+      --home string       directory for config and data (default "/Users/admin/.okchaincli")
+  -o, --output string     Output format (text|json) (default "text")
+      --passwd string     Pass word of sender (default "12345678")
+      --trace             print out full stack trace on errors
+```
+
+#### Query governance parameters
+
+
+Query the all the parameters for the governance process.
+
+```shell
+okchaincli query gov params -h
+
+Query the all the parameters for the governance process.
+
+Example:
+  okchaincli query gov params
+
+Usage:
+  okchaincli query gov params [flags]
+
+Flags:
+      --height int    Use a specific height to query state at (this can error if the node is pruning state)
+  -h, --help          help for params
+      --indent        Add indent to JSON response
+      --ledger        Use a connected Ledger device
+      --node string   <host>:<port> to Tendermint RPC interface for this chain (default "tcp://localhost:26657")
+      --trust-node    Trust connected full node (don't verify proofs for responses)
+
+Global Flags:
+      --chain-id string   Chain ID of tendermint node
+  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
+      --home string       directory for config and data (default "/Users/admin/.okchaincli")
+  -o, --output string     Output format (text|json) (default "text")
+      --passwd string     Pass word of sender (default "12345678")
+      --trace             print out full stack trace on errors
+```
+
+##### Governance module parameters
+
+| Parameters              | Mark                                                                                               
+| :----                   | :----  |                                                                                                   
+| MaxDepositPeriod        | Text/parameter modification/app upgrade deposit period |                                                                         
+| MinDeposit              | Text/parameter modification/app Upgrade proposal maximum deposit <br>If the proposed mortgage exceeds this value, the Voting Period will be effective    |                           |
+| VotingPeriod            | Text/Parameter Modification/app upgrade proposal voting period|                                                                        
+| Quorum                  | weight threshold for voting on the entire network when the voting period ends，for [voting statistics]()|                                                                                     
+| Threshold               | weight threshold for the proportion of Yes votes to all non-abstained votes，for[voting statistics]() |                                                                       
+| Veto                    | weight threshold for the proportion of NoWithVeto votes to all votes，for[voting statistics]()  | 
+| YesInVotePeriod | weight threshold for the proportion of Yes votes to totalBonded before the voting ends |                                                                                                       
+| MaxTxNumPerBlock        | maximum number of transactions contained in each block  |
+
+
+## Slashing
+
+### Change target validator state from jailed to unjail
+```sh
+okchaincli tx slashing unjail -h
+unjail a jailed validator:
+
+Example:
+    okchaincli tx slashing unjail --from mykey
+
+Usage:
+    okchaincli tx slashing unjail [flags]
+Flags:
+    --from string             Name or address of private key with which to sign
+```
+
+### Query jail state of target validator 
+```sh
+okchaincli query slashing signing-info -h
+
+Use a validators' consensus public key to find the signing-info for that validator:
+
+Example:
+    okchaincli query slashing signing-info okchainvalconspub1zcjduepqfhvwcmt7p06fvdgexxhmz0l8c7sgswl7ulv7aulk364x4g5xsw7sr0k2g5
+
+Usage:
+    okchaincli query slashing signing-info [validator-conspub] [flags]
+
+Flags:
+      --height int    Use a specific height to query state at (this can error if the node is pruning state)
+  -h, --help          help for signing-info
+      --indent        Add indent to JSON response
+      --ledger        Use a connected Ledger device
+      --node string   <host>:<port> to Tendermint RPC interface for this chain (default "tcp://localhost:26657")
+      --trust-node    Trust connected full node (don't verify proofs for responses)
+```
+
+###  Query params from slashing module
+```sh
+okchaincli query slashing params -h
+
+Query genesis parameters for the slashing module:
+
+Example:
+    okchaincli query slashing params
+
+Usage:
+    okchaincli query slashing params [flags]
+  
+Flags:
+      --height int    Use a specific height to query state at (this can error if the node is pruning state)
+  -h, --help          help for params
+      --indent        Add indent to JSON response
+      --ledger        Use a connected Ledger device
+      --node string   <host>:<port> to Tendermint RPC interface for this chain (default "tcp://localhost:26657")
+      --trust-node    Trust connected full node (don't verify proofs for responses)
+```
+
+
+
 
