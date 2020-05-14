@@ -6,7 +6,6 @@ order: 1
 
 This document contains all the necessary information for delegators to interact with the OKChain through the Command-Line Interface (CLI).
 
-It also contains instructions on how to manage accounts, restore accounts from the fundraiser and use a ledger nano device.
 
 ::: danger
 **Very Important**: Please assure that you follow the steps described hereinafter
@@ -21,10 +20,7 @@ with utmost care, we can nevertheless expect to have issues, updates and bugs.
 Furthermore, interaction with blockchain technology requires
 advanced technical skills and always entails risks that are outside our control.
 By using the software, you confirm that you understand the inherent risks
-associated with cryptographic software (see also risk section of the 
-[Interchain OKChain Contribution terms](https://github.com/cosmos/cosmos/blob/master/fundraiser/Interchain%20Cosmos%20Contribution%20Terms%20-%20FINAL.pdf)) and that the Interchain Foundation and/or 
-the Tendermint Team may not be held liable for potential damages arising out of the use of the
-software. Any use of this open source software released under the Apache 2.0 license is
+associated with cryptographic software. Any use of this open source software released under the Apache 2.0 license is
 done at your own risk and on a "AS IS" basis, without warranties or conditions
 of any kind.
 :::
@@ -35,7 +31,6 @@ Please exercise extreme caution!
 
 - [Installing `okchaincli`](#installing-okchaincli)
 - [OKChain Accounts](#cosmos-accounts)
-    + [Restoring an Account from the Fundraiser](#restoring-an-account-from-the-fundraiser)
     + [Creating an Account](#creating-an-account)
 - [Accessing the OKChain Network](#accessing-the-cosmos-hub-network)
     + [Running Your Own Full-Node](#running-your-own-full-node)
@@ -70,7 +65,7 @@ Not available yet.
 
 ## OKChain Accounts
 
-At the core of every OKChain account, there is a seed, which takes the form of a 12 or 24-words mnemonic. From this mnemonic, it is possible to create any number of OKChain accounts, i.e. pairs of private key/public key. This is called an HD wallet (see [BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki) for more information on the HD wallet specification).
+At the core of every OKChain account, there is a seed, which takes the form of a 12-words mnemonic. From this mnemonic, it is possible to create any number of OKChain accounts, i.e. pairs of private key/public key. This is called an HD wallet (see [BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki) for more information on the HD wallet specification).
 
 ```
      Account 0                         Account 1                         Account 2
@@ -111,94 +106,13 @@ The funds stored in an account are controlled by the private key. This private k
 **Do not lose or share your 12 words with anyone. To prevent theft or loss of funds, it is best to ensure that you keep multiple copies of your mnemonic, and store it in a safe, secure place and that only you know how to access. If someone is able to gain access to your mnemonic, they will be able to gain access to your private keys and control the accounts associated with them.**
 :::
 
-The address is a public string with a human-readable prefix (e.g. `cosmos10snjt8dmpr5my0h76xj48ty80uzwhraqalu4eg`) that identifies your account. When someone wants to send you funds, they send it to your address. It is computationally infeasible to find the private key associated with a given address. 
+The address is a public string with a human-readable prefix (e.g. `okchain1e9mh6ypht7ncfc482qcl0tj2q6j84fkqtl4x9k`) that identifies your account. When someone wants to send you funds, they send it to your address. It is computationally infeasible to find the private key associated with a given address. 
 
-### Restoring an Account from the Fundraiser
-
-::: tip
-*NOTE: This section only concerns fundraiser participants*
-:::
-
-If you participated in the fundraiser, you should be in possession of a 12-words mnemonic. Newly generated mnemonics use 24 words, but 12-word mnemonics are also compatible with all the OKChain tools. 
-
-#### On a Ledger Device
-
-At the core of a ledger device, there is a mnemonic used to generate accounts on multiple blockchains (including the OKChain). Usually, you will create a new mnemonic when you initialize your ledger device. However, it is possible to tell the ledger device to use a mnemonic provided by the user instead. Let us go ahead and see how you can input the mnemonic you obtained during the fundraiser as the seed of your ledger device. 
-
-::: warning
-*NOTE: To do this, **it is preferable to use a brand new ledger device.**. Indeed, there can be only one mnemonic per ledger device. If, however, you want to use a ledger that is already initialized with a seed, you can reset it by going in `Settings`>`Device`>`Reset All`. **Please note that this will wipe out the seed currently stored on the device. If you have not properly secured the associated mnemonic, you could lose your funds!!!***
-:::
-
-The following steps need to be performed on an un-initialized ledger device:
-
-1. Connect your ledger device to the computer via USB
-2. Press both buttons
-3. Do **NOT** choose the "Config as a new device" option. Instead, choose "Restore Configuration"
-4. Choose a PIN
-5. Choose the 12 words option
-6. Input each of the words you got during the fundraiser, in the correct order. 
-
-Your ledger is now correctly set up with your fundraiser mnemonic! Do not lose this mnemonic! If your ledger is compromised, you can always restore a new device again using the same mnemonic.
-
-Next, click [here](#using-a-ledger-device) to learn how to generate an account. 
-
-#### On a Computer
-
-::: warning
-**NOTE: It is more secure to perform this action on an offline computer**
-::: 
-
-To restore an account using a fundraiser mnemonic and store the associated encrypted private key on a computer, use the following command:
-
-```bash
-okchaincli keys add <yourKeyName> --recover
-```
-
-- `<yourKeyName>` is the name of the account. It is a reference to the account number used to derive the key pair from the mnemonic. You will use this name to identify your account when you want to send a transaction.
-- You can add the optional `--account` flag to specify the path (`0`, `1`, `2`, ...) you want to use to generate your account. By default, account `0` is generated. 
-
-The private key of account `0` will be saved in your operating system's credentials storage.
-Each time you want to send a transaction, you will need to unlock your system's credentials store.
-If you lose access to your credentials storage, you can always recover the private key with the
-mnemonic.
-
-::: tip
-**You may not be prompted for password each time you send a transaction since most operating systems
-unlock user's credentials store upon login by default. If you want to change your credentials
-store security policies please refer to your operating system manual.**
-:::
 
 ### Creating an Account
 
 To create an account, you just need to have `okchaincli` installed. Before creating it, you need to know where you intend to store and interact with your private keys. The best options are to store them in an offline dedicated computer or a ledger device. Storing them on your regular online computer involves more risk, since anyone who infiltrates your computer through the internet could exfiltrate your private keys and steal your funds.
 
-#### Using a Ledger Device
-
-::: warning
-**Only use Ledger devices that you bought factory new or trust fully**
-:::
-
-When you initialize your ledger, a 24-word mnemonic is generated and stored in the device. This mnemonic is compatible with OKChain and OKChain accounts can be derived from it. Therefore, all you have to do is make your ledger compatible with `okchaincli`. To do so, you need to go through the following steps:
-
-1. Download the Ledger Live app [here](https://www.ledger.com/pages/ledger-live). 
-2. Connect your ledger via USB and update to the latest firmware
-3. Go to the ledger live app store, and download the "OKChain" application (this can take a while). **Note: You may have to enable `Dev Mode` in the `Settings` of Ledger Live to be able to download the "OKChain" application**. 
-4. Navigate to the OKChain app on your ledger device
-
-Then, to create an account, use the following command:
-
-```bash
-okchaincli keys add <yourAccountName> --ledger 
-```
-
-::: warning
-**This command will only work while the Ledger is plugged in and unlocked**
-:::
-
-- `<yourKeyName>` is the name of the account. It is a reference to the account number used to derive the key pair from the mnemonic. You will use this name to identify your account when you want to send a transaction.
-- You can add the optional `--account` flag to specify the path (`0`, `1`, `2`, ...) you want to use to generate your account. By default, account `0` is generated. 
-
-#### Using a Computer 
 
 ::: warning
 **NOTE: It is more secure to perform this action on an offline computer**
@@ -309,7 +223,7 @@ okchaincli config trust-node false
 Finally, let us set the `chain-id` of the blockchain we want to interact with:
 
 ```bash
-okchaincli config chain-id cosmoshub-2
+okchaincli config chain-id myokchain
 ```
 
 ## Querying the State
@@ -521,10 +435,10 @@ okchaincli tx staking delegate <validatorAddress> <amountToBond> --from <delegat
 
 In order to sign, you will also need the `chain-id`, `account-number` and `sequence`. The `chain-id` is a unique identifier for the blockchain on which you are submitting the transaction. The `account-number` is an identifier generated when your account first receives funds. The `sequence` number is used to keep track of the number of transactions you have sent and prevent replay attacks.
 
-Get the chain-id from the genesis file (`cosmoshub-2`), and the two other fields using the account query:
+Get the chain-id from the genesis file (`okchain`), and the two other fields using the account query:
 
 ```bash
-okchaincli query account <yourAddress> --chain-id cosmoshub-2
+okchaincli query account <yourAddress> --chain-id okchain
 ```
 
 Then, copy `unsignedTx.json` and transfer it (e.g. via USB) to the offline computer. If it is not done already, [create an account on the offline computer](#using-a-computer). For additional security, you can double check the parameters of your transaction before signing it using the following command:
@@ -536,7 +450,7 @@ cat unsignedTx.json
 Now, sign the transaction using the following command. You will need the `chain-id`, `sequence` and `account-number` obtained earlier:
 
 ```bash
-okchaincli tx sign unsignedTx.json --from <delegatorKeyName> --offline --chain-id cosmoshub-2 --sequence <sequence> --account-number <account-number> > signedTx.json
+okchaincli tx sign unsignedTx.json --from <delegatorKeyName> --offline --chain-id okchain --sequence <sequence> --account-number <account-number> > signedTx.json
 ```
 
 Copy `signedTx.json` and transfer it back to the online computer. Finally, use the following command to broadcast the transaction:
