@@ -83,7 +83,6 @@ Contents
 
    dex-trades/dex-trades-overview
    dex-trades/dex-trades-guide-cli
-   dex-trades/dex-trades-faq
 
 .. toctree::
    :maxdepth: 3
@@ -100,7 +99,7 @@ Contents
    concepts/general-concepts
    concepts/fee
    concepts/gov
-   concepts/periodic_auction
+   concepts/periodic-auction
    concepts/upgrade-concept
    concepts/sentry-nodes
 

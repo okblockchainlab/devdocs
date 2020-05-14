@@ -32,7 +32,7 @@ staking cli contains the following 5 commands for PoS operations, providing comp
 Upgrade a node to a validator through self-delegation and set the description, commission rate and related change limits on a validator.
 
 ```bash
-okchaincli tx staking create-validator --amount=2okt --pubkey=$(okchaind tendermint show-validator) --moniker="my nickname" --identity="logo|||http://mywebsite/pic/logo.jpg" --website="http://mywebsite" --details="my slogan" --commission-rate="0.10" --commission-max-rate="0.50" --commission-max-change-rate="0.01" --min-self-delegation="1" --from jack
+  okchaincli tx staking create-validator --amount=2okt --pubkey=$(okchaind tendermint show-validator) --moniker="my nickname" --identity="logo|||http://mywebsite/pic/logo.jpg" --website="http://mywebsite" --details="my slogan" --from jack
 ```
 
 * amount indicates the number of self-delegated okt
@@ -41,10 +41,6 @@ okchaincli tx staking create-validator --amount=2okt --pubkey=$(okchaind tenderm
 * identity specifies the address of the validator’s profile picture
 * website indicates the validator’s website address
 * details indicate the validator’s detailed description
-* commission-rate indicates the current commission rate (rounded to at most 2 decimal places)
-* commission-max-rate indicates the maximum commission rate of the validator that cannot be set to exceed the maximum commission rate (rounded to at most 2 decimal places)
-* commission-max-change-rate indicates the maximum adjustment rate that is acceptable each time when the commission rate is adjusted. Adjustments exceeding such maximum adjustment rate become invalid (rounded to at most 2 decimal places)
-* min-self-delegation indicates the minimum number of self-delegated okt. If the number is lower than the minimum number of self-delegated okt, the self-delegation is invalid
 * from specifies the operator’s account, which is jack here
 
 ### Update a validator
@@ -52,63 +48,54 @@ okchaincli tx staking create-validator --amount=2okt --pubkey=$(okchaind tenderm
 The operator can update the description of the validator and adjust the commission rate.
 
 ```bash
-okchaincli tx staking edit-validator --moniker=“my new nickname” --identity="logo|||http://mynewwebsite/pic/newlogo.jpg" --website="http://mynewwebsite" --details="my new slogan" --commission-rate="0.11" --from jack
+okchaincli tx staking edit-validator --moniker=“my new nickname” --identity="logo|||http://mynewwebsite/pic/newlogo.jpg" --website="http://mynewwebsite" --details="my new slogan"  --from jack
 ```
 
 - moniker indicates the alias of the validator to be updated
 - identity specifies the address of the profile picture of the validator to be updated
 - website indicates the website address of the validator to be updated
 - details indicate the detailed description of the validator to be updated
-- commission-rate indicates the commission rate to be updated which can only be updated once every 24 hours, and the adjustment cannot exceed commission-max-change-rate
 - from specifies the operator’s account, which is jack here
 
 
 ### Delegate proof of stake
 
-okchain users can delegate their proof of stake to several validators to authorize them to perform related obligations on their behalf, such as voting on proposals. By delegating proof of stake, users can receive rewards and participate in okchain governance.
+okchain users can delegate their proof of stake to several validators to authorize them to perform related obligations on their behalf, such as voting on proposals. By delegating proof of stake, users can participate in okchain governance.
 
 ```bash
-okchaincli tx staking delegate okchainvaloper1005qzgwplwu8hf9pjhhtlm0t2x27hyppgqc2w6 20okt  --from rose
+okchaincli tx staking delegate  20okt  --from rose
 * In the example, okchainvaloper1005qzgwplwu8hf9pjhhtlm0t2x27hyppgqc2w6 is the validator’s address, and 20okt is the number of okt to be delegated.
 ```
 
 * from indicates the delegate user’s account, which is rose here
 
-### Undelegate
+### Vote
 
-okchain users can cancel the delegation and redeem their delegated shares for okt. Users must wait for 2 election periods to receive the redeemed okt after undelegation.
-
-```bash
-okchaincli tx staking unbond okchainvaloper1005qzgwplwu8hf9pjhhtlm0t2x27hyppgqc2w6 10 --from rose
-* In the example, okchainvaloper1005qzgwplwu8hf9pjhhtlm0t2x27hyppgqc2w6 is the validator’s address, and 10 is the number of the delegated share to be undelegated
-```
-
-* from indicates the user account to be undelegated, which is rose here
-
-### Re-delegate
-
-okchain users can re-delegate the delegated shares at validator<sub>a</sub> to validator<sub>b</sub> by re-delegating transactions. Re-delegated transactions during the current cycle will be effective in the next cycle.
+okchain users can 
 
 ```bash
-okchaincli tx staking redelegate okchainvaloper1005qzgwplwu8hf9pjhhtlm0t2x27hyppgqc2w6 okchainvaloper1alq9na49n9yycysh889rl90g9nhe58lcs50wu5 10 --from rose
-* * In the example, okchainvaloper1005qzgwplwu8hf9pjhhtlm0t2x27hyppgqc2w6 is the validator_a’s address, and okchainvaloper1alq9na49n9yycysh889rl90g9nhe58lcs50wu5 is the validator_b’s address, and 10 is the number of the delegated share to be re-delegated
+okchaincli tx staking vote okchainvaloper1alq9na49n9yycysh889rl90g9nhe58lcs50wu5,okchainvaloper1svzxp4ts5le2s4zugx34ajt6shz2hg42a3gl7g,okchainvaloper10q0rk5qnyag7wfvvt7rtphlw589m7frs863s3m,okchainvaloper1g7znsf24w4jc3xfca88pq9kmlyjdare6mph5rx --from mykey
+* In the example, okchainvaloper1alq9na49n9yycysh889rl90g9nhe58lcs50wu5,okchainvaloper1svzxp4ts5le2s4zugx34ajt6shz2hg42a3gl7g,okchainvaloper10q0rk5qnyag7wfvvt7rtphlw589m7frs863s3m,okchainvaloper1g7znsf24w4jc3xfca88pq9kmlyjdare6mph5rx is the validator’s address, and all of okt to be vote.
 ```
 
 * from indicates the user account to be re-delegated, which is rose here
 
-To ensure PoS security, re-delegated transactions within each cycle will be divided into three types for processing:
+### Unbond
 
+okchain users can unbond the deposit token while canceling all the votes, it takes 14 days for unbonding the tokens.
 
-*  If the src validator of re-delegated transactions is the node that generates blocks in the next cycle, the transaction will be delayed until the next cycle. The earliest execution time is the first block height in the next cycle and the latest execution time is the penultimate block height in the next cycle. The re-delegated transactions in the same src validator will replace the delayed transactions and only the latest re-delegated transactions will be executed;
+   - [ ] allow the user to exchange votes into tokens multiple times, and the number of votes allowed to be withdrawan from deposit can be 0.001 \ ~ n (total number of votes owned by the user)
+   - [ ] if the user status is "voted", after the command is executed, the number of votes that have been voted will be automatically updated and deducted. Essentially, the new votes will be used for re voting
+   - [ ] if the user status is "voted", execute the command and withdraw all the votes, essentially execute the unbond behavior
+   - [ ] if the user's status is "not voted", after the command is executed, the votes will not be affected. After 14 days, it will be converted into token and returned to the user's account
+   - [ ] users are allowed to perform the "unbond" operation for many times, but it only takes effect for the last time, and the last unbond operation automatically accumulates the transaction amount in the process of unbond
+   
+Unbond shares and withdraw the same amount of votes
 
-![bonded validator](../img/red1.png)
+```bash
+okchaincli tx staking unbond 10okt --from rose
+* In the example, 10 is the number of the unbond share to be undelegated
+```
 
+* from indicates the user account to be undelegated, which is rose here
 
-*  If the src validator of re-delegated transactions is the node that exits the block generation node set, the transaction will be delayed until the first block height is executed in the next cycle;
-
-![unbonding validator](../img/red2.png)
-
-
-*  If the src validator of re-delegated transactions is not within the block generation node set in the next cycle and is not the node that exits the block generation node set, the transaction will be executed immediately.
-
-![unbonded validator](../img/red3.png)
