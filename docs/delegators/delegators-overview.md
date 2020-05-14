@@ -1,22 +1,22 @@
-<!--
-order: 3
--->
+# Delegators Overview
 
-# Delegator Security
 
-The launch of any public blockchain is an incredibly exciting time, and it's definitely one that malicious actors may try to take advantage of for their own personal gain. Owning and having access to cryptocurrency can make you a valuable target for an attacker, but there are many things you can do to improve your personal security and reduce or eliminate security risks.
 
-## Social Engineering
+## Introduction
 
-_[Social engineering](https://en.wikipedia.org/wiki/Social_engineering_(security))_ has existed for about as long as human beings have been on the planet, and in the technical era, it usually takes in the form of  [phishing](https://ssd.eff.org/en/module/how-avoid-phishing-attacks)  or  [spearphishing](https://en.wikipedia.org/wiki/Phishing#Spear_phishing) . Both of these attacks are wildly successful forms of trickery that are responsible for over 95% of account security breaches, and they don't just happen via email: these days, opportunistic and targeted phishing attempts take place  [anywhere that you have an inbox](https://www.umass.edu/it/security/phishing-fraudulent-emails-text-messages-phone-calls) . It doesn't matter if you're using Signal, Telegram, SMS, Twitter, or just checking your DMs on forums or social networks, attackers have a  [plethora of opportunities](https://jia.sipa.columbia.edu/weaponization-social-media-spear-phishing-and-cyberattacks-democracy)  to gain foothold in your digital life in effort to separate you from valuable information and assets that you most definitely don't want to lose. If a deal pops up that  [sounds too good to be true](https://www.psychologytoday.com/us/blog/mind-in-the-machine/201712/how-fear-is-being-used-manipulate-cryptocurrency-markets) , or a message shows up asking for information that should never, ever be shared with someone else, you can always verify it before engaging with it by navigating to our official website or an official OKChain communication channel on your own. 
+OKChain是基于Tendermint，它依赖于一组负责提交区块validators。These validators participate in the consensus protocol by broadcasting votes which contain cryptographic signatures signed by each validator's private key.
 
-* **Be skeptical of unexpected attachments, or emails that ask you to visit a suspicious or unfamiliar website in the context of blockchains or cryptocurrency.** An attacker may attempt to lure you to a  [compromised site](https://blog.malwarebytes.com/cybercrime/2013/02/tools-of-the-trade-exploit-kits/)  designed to steal sensitive information from your computer. If you're a Gmail user, test your resilience against the latest email-based phishing tactics  [here](https://phishingquiz.withgoogle.com/) . 
+令牌持有者可以通过“委托”命令获得选票，选出自己认为对于生态有意义的validators，对于这些令牌持有者称之为delegator。
 
-* **Do your due diligence before purchasing OKT. Neither the Tendermint team nor the Interchain Foundation will be selling OKT at launch**, so if you see social media posts or emails advertising a token sale from us, they're not real and should be dismissed immediately. If you're on the hunt for OKT, make sure that you've researched the seller or exchange to confirm that the tokens are coming from a trustworthy source. 
+For a practical guide on how to become a delegator, click [here](./delegator-guide-cli.md).
 
-* **No one from OKChain, the Tendermint team or the Interchain Foundation will ever send an email that asks for you to share any kind of account credentials or your 12 words with us**, and we will always use our official Twitter, Medium, and Github accounts to communicate important news directly to the OKChain community.
 
-If you receive an email or tweet that sounds too good to be true, is likely to be a scam.  
+
+## Voting Mechanics
+
+In OKChain, any user who has staked OKT tokens can vote. Each user is allowed to vote for up to 30 validator candidates using the full weight of their stake. For example, if a user has 1000 OKT staked, she can cast 1000 votes each for up to 30 validators. The top 21 validator candidates by total number of votes received form the core set of validators. Additional validators, ranked by total votes, are also compensated by the network to serve as validator candidates.
+
+OKChain is a liquid, delegative democracy. Users have the option of voting directly for validator, but they can also delegate their voting power to another account to vote on their behalf. The delegate account, called a proxy, has no control over the original user’s account — the user can proxy her vote trustlessly without handing over any keys. The proxy simply has the power to direct that user’s voting power towards certain validators, but the user can revoke her voting power from the proxy at any point.
 
 
 ## Key Management 

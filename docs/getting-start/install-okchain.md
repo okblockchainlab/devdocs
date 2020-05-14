@@ -21,23 +21,23 @@ source ~/.bash_profile
 ```
 
 ::: tip
-**Go 1.14+** is required for the OKChain SDK.
+**Go 1.12+** is required for the OKChain.
 :::
 
 ## Install the binaries
 
 Next, let's install the latest version of OKChain. Make sure you `git checkout` the
-correct [released version](https://github.com/cosmos/okchain/releases).
+correct [released version](https://github.com/okex/okchain/releases).
 
 ```bash
-git clone -b <latest-release-tag> https://github.com/cosmos/okchain
+git clone -b <latest-release-tag> https://github.com/okex/okchain
 cd okchain && make install
 ```
 
 If this command fails due to the following error message, you might have already set `LDFLAGS` prior to running this step.
 
 ```
-# github.com/cosmos/okchain/cmd/okchaind
+# github.com/okex/okchain/cmd/okchaind
 flag provided but not defined: -L
 usage: link [options] main.o
 ...
@@ -65,10 +65,12 @@ $ okchaincli version --long
 name: okchain
 server_name: okchaind
 client_name: okchaincli
-version: 2.0.3
-commit: 2f6783e298f25ff4e12cb84549777053ab88749a
-build_tags: netgo,ledger
-go: go version go1.12.5 darwin/amd64
+version: v0.10.0
+commit: 20a720f38c6c60540a739351e485779a098ee413
+build_tags: netgo
+go: go version go1.14.2 darwin/amd64
+cosmos_sdk: v0.37.9
+tendermint: v0.32.10
 ```
 
 ### Build Tags
@@ -86,7 +88,7 @@ Build tags indicate special features that have been enabled in the binary.
 
 ## Developer Workflow
 
-To test any changes made in the SDK or Tendermint, a `replace` clause needs to be added to `go.mod` providing the correct import path.
+To test any changes made in the Cosmos-SDK or Tendermint, a `replace` clause needs to be added to `go.mod` providing the correct import path.
 
 - Make appropriate changes
 - Add `replace github.com/cosmos/cosmos-sdk => /path/to/clone/cosmos-sdk` to `go.mod`
