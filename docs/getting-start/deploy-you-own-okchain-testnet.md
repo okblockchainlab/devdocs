@@ -4,24 +4,21 @@ order: 6
 
 # Deploy Your Own OKChain Testnet
 
-This document describes 3 ways to setup a network of `okchaind` nodes, each serving a different usecase:
+This document describes 2 ways to setup a network of `okchain` nodes, each serving a different usecase:
 
 1. Single-node, local, manual testnet
 2. Multi-node, local, automated testnet
-3. Multi-node, remote, automated testnet
 
-Supporting code can be found in the [networks directory](https://github.com/cosmos/okchain/tree/master/networks) and additionally the `local` or `remote` sub-directories.
-
-> NOTE: The `remote` network bootstrapping may be out of sync with the latest releases and is not to be relied upon.
+Supporting code can be found in the [networks directory](https://github.com/okex/okchain/tree/master/networks) and additionally the `local` sub-directories.
 
 ## Available Docker images
 
 In case you need to use or deploy okchain as a container you could skip the `build` steps and use the official images, \$TAG stands for the version you are interested in:
 
-- `docker run -it -v ~/.okchaind:/root/.okchaind -v ~/.okchaincli:/root/.okchaincli tendermint:$TAG okchaind init`
-- `docker run -it -p 26657:26657 -p 26656:26656 -v ~/.okchaind:/root/.okchaind -v ~/.okchaincli:/root/.okchaincli tendermint:$TAG okchaind start`
+- `docker run -it -v ~/.okchaind:/root/.okchaind -v ~/.okchaincli:/root/.okchaincli okchain/node:$TAG okchaind init`
+- `docker run -it -p 26657:26657 -p 26656:26656 -v ~/.okchaind:/root/.okchaind -v ~/.okchaincli:/root/.okchaincli okchain/node:$TAG okchaind start`
 - ...
-- `docker run -it -v ~/.okchaind:/root/.okchaind -v ~/.okchaincli:/root/.okchaincli tendermint:$TAG okchaincli version`
+- `docker run -it -v ~/.okchaind:/root/.okchaind -v ~/.okchaincli:/root/.okchaincli okchain/node:$TAG okchaincli version`
 
 The same images can be used to build your own docker-compose stack.
 
@@ -49,7 +46,7 @@ okchaincli keys add validator
 # Add that key into the genesis.app_state.accounts array in the genesis file
 # NOTE: this command lets you set the number of coins. Make sure this account has some coins
 # with the genesis.app_state.staking.params.bond_denom denom, the default is staking
-okchaind add-genesis-account $(okchaincli keys show validator -a) 1000000000stake,1000000000validatortoken
+okchaind add-genesis-account $(okchaincli keys show validator -a) 1000000000okt
 
 # Generate the transaction that creates your validator
 okchaind gentx --name validator
@@ -75,7 +72,7 @@ From the [networks/local directory](https://github.com/cosmos/okchain/tree/maste
 
 ### Build
 
-Build the `okchaind` binary (linux) and the `tendermint/okchaindnode` docker image required for running the `localnet` commands. This binary will be mounted into the container and can be updated rebuilding the image, so you only need to build the image once.
+Build the `okchaind` binary (linux) and the `okchain/node` docker image required for running the `localnet` commands. This binary will be mounted into the container and can be updated rebuilding the image, so you only need to build the image once.
 
 ```bash
 # Clone the okchain repo
@@ -87,8 +84,8 @@ cd okchain
 # Build the linux binary in ./build
 make build-linux
 
-# Build tendermint/okchaindnode image
-make build-docker-okchaindnode
+# Build okchain/node image
+make build-docker-okchainnode
 ```
 
 ### Run Your Testnet
@@ -122,7 +119,7 @@ calling the `okchaind testnet` command. This outputs a handful of files in the
 `./build` directory:
 
 ```bash
-$ tree -L 2 build/
+$ tree -L 3 build/
 build/
 ├── okchaincli
 ├── okchaind
@@ -136,28 +133,28 @@ build/
 │   │   ├── key_seed.json
 │   │   └── keys
 │   └── okchaind
-│       ├── ${LOG:-okchaind.log}
+│       ├── okchaind.log
 │       ├── config
 │       └── data
 ├── node1
 │   ├── okchaincli
 │   │   └── key_seed.json
 │   └── okchaind
-│       ├── ${LOG:-okchaind.log}
+│       ├── okchaind.log
 │       ├── config
 │       └── data
 ├── node2
 │   ├── okchaincli
 │   │   └── key_seed.json
 │   └── okchaind
-│       ├── ${LOG:-okchaind.log}
+│       ├── okchaind.log
 │       ├── config
 │       └── data
 └── node3
     ├── okchaincli
     │   └── key_seed.json
     └── okchaind
-        ├── ${LOG:-okchaind.log}
+        ├── okchaind.log
         ├── config
         └── data
 ```
@@ -196,74 +193,4 @@ If you have multiple binaries with different names, you can specify which one to
 ```
 # Run with custom binary
 BINARY=okchainfoo make localnet-start
-```
-
-## Multi-Node, Remote, Automated Testnet
-
-The following should be run from the [networks directory](https://github.com/cosmos/okchain/tree/master/networks).
-
-### Terraform & Ansible
-
-Automated deployments are done using [Terraform](https://www.terraform.io/) to create servers on AWS then
-[Ansible](http://www.ansible.com/) to create and manage testnets on those servers.
-
-### Prerequisites
-
-- Install [Terraform](https://www.terraform.io/downloads.html) and [Ansible](http://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) on a Linux machine.
-- Create an [AWS API token](https://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html) with EC2 create capability.
-- Create SSH keys
-
-```
-export AWS_ACCESS_KEY_ID="2345234jk2lh4234"
-export AWS_SECRET_ACCESS_KEY="234jhkg234h52kh4g5khg34"
-export TESTNET_NAME="remotenet"
-export CLUSTER_NAME= "remotenetvalidators"
-export SSH_PRIVATE_FILE="$HOME/.ssh/id_rsa"
-export SSH_PUBLIC_FILE="$HOME/.ssh/id_rsa.pub"
-```
-
-These will be used by both `terraform` and `ansible`.
-
-### Create a Remote Network
-
-```
-SERVERS=1 REGION_LIMIT=1 make validators-start
-```
-
-The testnet name is what's going to be used in --chain-id, while the cluster name is the administrative tag in AWS for the servers. The code will create SERVERS amount of servers in each availability zone up to the number of REGION_LIMITs, starting at us-east-2. (us-east-1 is excluded.) The below BaSH script does the same, but sometimes it's more comfortable for input.
-
-```
-./new-testnet.sh "$TESTNET_NAME" "$CLUSTER_NAME" 1 1
-```
-
-### Quickly see the /status Endpoint
-
-```
-make validators-status
-```
-
-### Delete Servers
-
-```
-make validators-stop
-```
-
-### Logging
-
-You can ship logs to Logz.io, an Elastic stack (Elastic search, Logstash and Kibana) service provider. You can set up your nodes to log there automatically. Create an account and get your API key from the notes on [this page](https://app.logz.io/#/dashboard/data-sources/Filebeat), then:
-
-```
-yum install systemd-devel || echo "This will only work on RHEL-based systems."
-apt-get install libsystemd-dev || echo "This will only work on Debian-based systems."
-
-go get github.com/mheese/journalbeat
-ansible-playbook -i inventory/digital_ocean.py -l remotenet logzio.yml -e LOGZIO_TOKEN=ABCDEFGHIJKLMNOPQRSTUVWXYZ012345
-```
-
-### Monitoring
-
-You can install the DataDog agent with:
-
-```
-make datadog-install
 ```

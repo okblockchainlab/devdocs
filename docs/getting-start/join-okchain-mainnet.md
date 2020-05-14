@@ -5,9 +5,9 @@ order: 3
 # Join the OKChain Mainnet
 
 ::: tip 
-See the [launch repo](https://github.com/cosmos/launch) for
+See the [launch repo](https://github.com/okex/launch) for
 information on the mainnet, including the correct version
-of the OKChain-SDK to use and details about the genesis file.
+of the OKChain to use and details about the genesis file.
 :::
 
 ::: warning
@@ -35,7 +35,7 @@ You can edit this `moniker` later, in the `~/.okchaind/config/config.toml` file:
 moniker = "<your_custom_moniker>"
 ```
 
-You can edit the `~/.okchaind/config/app.toml` file in order to enable the anti spam mechanism and reject incoming transactions with less than the minimum gas prices:
+You can edit the `~/.okchaind/config/okchaind.toml` file in order to enable the anti spam mechanism and reject incoming transactions with less than the minimum gas prices:
 
 ```
 # This is a TOML config file.
@@ -60,10 +60,10 @@ Fetch the mainnet's `genesis.json` file into `okchaind`'s config directory.
 
 ```bash
 mkdir -p $HOME/.okchaind/config
-curl https://raw.githubusercontent.com/cosmos/launch/master/genesis.json > $HOME/.okchaind/config/genesis.json
+curl https://raw.githubusercontent.com/okex/launch/master/genesis.json > $HOME/.okchaind/config/genesis.json
 ```
 
-Note we use the `latest` directory in the [launch repo](https://github.com/cosmos/launch) which contains details for the mainnet like the latest version and the genesis file. 
+Note we use the `latest` directory in the [launch repo](https://github.com/okex/launch) which contains details for the mainnet like the latest version and the genesis file. 
 
 ::: tip
 If you want to connect to the public testnet instead, click [here](./join-okchain-testnet.md)
@@ -77,18 +77,18 @@ okchaind start
 
 ### Add Seed Nodes
 
-Your node needs to know how to find peers. You'll need to add healthy seed nodes to `$HOME/.okchaind/config/config.toml`. The [`launch`](https://github.com/cosmos/launch) repo contains links to some seed nodes.
+Your node needs to know how to find peers. You'll need to add healthy seed nodes to `$HOME/.okchaind/config/config.toml`. The [`launch`](https://github.com/okex/launch) repo contains links to some seed nodes.
 
-If those seeds aren't working, you can find more seeds and persistent peers on a OKChain explorer (a list can be found on the [launch page](https://cosmos.network/launch)). 
+If those seeds aren't working, you can find more seeds and persistent peers on a OKChain explorer (a list can be found on the [launch page](https://okchain.network/launch)). 
 
-You can also ask for peers on the [Validators Riot Room](https://riot.im/app/#/room/#cosmos-validators:matrix.org)
+You can also ask for peers on the [Validators Riot Room](https://riot.im/app/#/room/#okchain-validators:matrix.org)
 
 For more information on seeds and peers, you can [read this](https://docs.tendermint.com/master/spec/p2p/peer.html).
 
 ## A Note on Gas and Fees
 
 ::: warning
-On OKChain mainnet, the accepted denom is `uatom`, where `1atom = 1.000.000uatom`
+On OKChain mainnet, the accepted denom is `okt`
 :::
 
 Transactions on the OKChain network need to include a transaction fee in order to be processed. This fee pays for the gas required to run the transaction. The formula is the following:
@@ -104,14 +104,14 @@ The `gasPrice` is the price of each unit of `gas`. Each validator sets a `min-ga
 The transaction `fees` are the product of `gas` and `gasPrice`. As a user, you have to input 2 out of 3. The higher the `gasPrice`/`fees`, the higher the chance that your transaction will get included in a block. 
 
 ::: tip
-For mainnet, the recommended `gas-prices` is `0.025uatom`. 
+For mainnet, the recommended `gas-prices` is `0.00000001okt`. 
 ::: 
 
 ## Set `minimum-gas-prices`
 
 Your full-node keeps unconfirmed transactions in its mempool. In order to protect it from spam, it is better to set a `minimum-gas-prices` that the transaction must meet in order to be accepted in your node's mempool. This parameter can be set in the following file `~/.okchaind/config/app.toml`.
 
-The initial recommended `min-gas-prices` is `0.025uatom`, but you might want to change it later.
+The initial recommended `min-gas-prices` is `0.00000001okt`, but you might want to change it later.
 
 ## Pruning of State
 
@@ -139,7 +139,7 @@ Check that everything is running smoothly:
 okchaincli status
 ```
 
-View the status of the network with the [OKChain Explorer](https://cosmos.network/launch). 
+View the status of the network with the [OKChain Explorer](https://okchain.network/launch). 
 
 ## Export State
 
@@ -162,37 +162,6 @@ If you plan to start a new network from the exported state, export with the `--f
 ```bash
 okchaind export --height [height] --for-zero-height > [filename].json
 ```
-
-## Verify Mainnet 
-
-Help to prevent a catastrophe by running invariants on each block on your full
-node. In essence, by running invariants you ensure that the state of mainnet is
-the correct expected state. One vital invariant check is that no okts are
-being created or destroyed outside of expected protocol, however there are many
-other invariant checks each unique to their respective module. Because invariant checks 
-are computationally expensive, they are not enabled by default. To run a node with 
-these checks start your node with the assert-invariants-blockly flag:
-
-```bash
-okchaind start --assert-invariants-blockly
-```
-
-If an invariant is broken on your node, your node will panic and prompt you to send
-a transaction which will halt mainnet. For example the provided message may look like: 
-
-```bash
-invariant broken:
-    loose token invariance:
-        pool.NotBondedTokens: 100
-        sum of account tokens: 101
-    CRITICAL please submit the following transaction:
-        okchaincli tx crisis invariant-broken staking supply
-
-```
-
-When submitting a invariant-broken transaction, transaction fee tokens are not
-deducted as the blockchain will halt (aka. this is a free transaction). 
-
 ## Upgrade to Validator Node
 
 You now have an active full node. What's the next step? You can upgrade your full node to become a OKChain Validator. The top 100 validators have the ability to propose new blocks to the OKChain. Continue onto [the Validator Setup](../validators/validators-guide-cli.md).
