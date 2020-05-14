@@ -15,10 +15,15 @@ Supporting code can be found in the [networks directory](https://github.com/okex
 
 In case you need to use or deploy okchain as a container you could skip the `build` steps and use the official images, \$TAG stands for the version you are interested in:
 
-- `docker run -it -v ~/.okchaind:/root/.okchaind -v ~/.okchaincli:/root/.okchaincli okchain/node:$TAG okchaind init`
-- `docker run -it -p 26657:26657 -p 26656:26656 -v ~/.okchaind:/root/.okchaind -v ~/.okchaincli:/root/.okchaincli okchain/node:$TAG okchaind start`
-- ...
-- `docker run -it -v ~/.okchaind:/root/.okchaind -v ~/.okchaincli:/root/.okchaincli okchain/node:$TAG okchaincli version`
+```bash
+docker run -it -v ~/.okchaind:/root/.okchaind -v ~/.okchaincli:/root/.okchaincli okchain/node:$TAG okchaind init
+
+docker run -it -p 26657:26657 -p 26656:26656 -v ~/.okchaind:/root/.okchaind -v ~/.okchaincli:/root/.okchaincli okchain/node:$TAG okchaind start
+
+...
+
+docker run -it -v ~/.okchaind:/root/.okchaind -v ~/.okchaincli:/root/.okchaincli okchain/node:$TAG okchaincli version
+```
 
 The same images can be used to build your own docker-compose stack.
 
