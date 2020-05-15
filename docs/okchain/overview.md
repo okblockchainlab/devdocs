@@ -22,7 +22,7 @@ OKChain-OpenDEX, as the first project of the OKChain ecosystem, is a middleware 
 
 Do you have OKT tokens? With OKT, you have the superpower to contribute to the security and governance of the OKChain. Delegate your OKT to one or more of the 100 validators on the OKChain blockchain to earn more OKT through Proof-of-Stake. You can also vote with your OKT to influence the future of the OKChain through on-chain governance proposals.
 
-Learn more about [being a delegator](../delegators/delegators-faq.html), and start participating with one of the following wallets.
+Learn more about [being a delegator](../delegators/delegators-faq.html).
 
 
 
