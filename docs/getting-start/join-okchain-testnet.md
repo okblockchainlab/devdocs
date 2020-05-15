@@ -75,8 +75,6 @@ For more information on seeds and peers, you can [read this](https://docs.tender
 
 ## Starting a New Node
 
-> NOTE: If you ran a full node on a previous testnet, please skip to [Upgrading From Previous Testnet](#upgrading-from-previous-testnet).
-
 Start the full node with this command:
 
 ```bash
