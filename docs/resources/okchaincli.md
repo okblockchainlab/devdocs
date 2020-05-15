@@ -1154,7 +1154,7 @@ Secondary sub-commands mainly include the following 2 functions
 
 #### 1.1 Place orders:
 ##### Example:
-Create a new limit order
+Place one or multiple orders.
 ```bash
 # place orders
 okchaincli tx order new [flags]
@@ -1277,6 +1277,7 @@ okchaincli tx order new --product xxb-08a_okt,xxb-08a_okt -s BUY,BUY -p 1,1 -q 1
 
 #### 1.2 Cancel orders:
 ##### Example:
+Cancel one or multiple orders.
 ```bash
 okchaincli tx order cancel [order-id] [flags]
 ```
@@ -1408,6 +1409,7 @@ okchaincli query order
 Secondary sub-commands mainly include the following functions
 #### 2.1 Order details:
 ##### Example:
+Query the information of a order.
 ```bash
 okchaincli query order detail [orderId]
 ```
@@ -1454,6 +1456,7 @@ okchaincli query order detail ID0000000525-1
 }
 ```
 #### 2.2 Order depthbook:
+Query the information of the depthbook.
 ##### Example:
 ```bash
 okchaincli query order depthbook [product]
@@ -1488,7 +1491,8 @@ okchaincli query order depthbook mycoin_okt
 	}]
 }
 ```
-#### 2.3 Query the state of depthbook:
+#### 2.3 order store:
+Query the state of depthbook.
 ##### Example:
 ```bash
 okchaincli query order store
@@ -1527,7 +1531,8 @@ okchaincli query order store
 	}
 }
 ```
-#### 2.4 Query all parameters during governance:
+#### 2.4 order parameters:
+Query all parameters during governance
 ##### Example:
 ```bash
 okchaincli query order params
@@ -1555,16 +1560,15 @@ okchaincli query order params
 
 # example return
 {
-  "order_expire_blocks": "86400",
-  "max_deals_per_block": "2000",
-  "new_order": "0.00000000",
-  "cancel": "0.01000000",
-  "cancel_native": "0.00200000",
-  "expire": "0.01000000",
-  "expire_native": "0.00200000",
-  "trade_fee_rate": "0.00100000",
-  "trade_fee_rate_native": "0.00040000"
+  "order_expire_blocks": "259200",
+  "max_deals_per_block": "1000",
+  "fee_per_block": {
+    "denom": "okt",
+    "amount": "0.00000000"
+  },
+  "trade_fee_rate": "0.00100000"
 }
+
 ```
 
 
