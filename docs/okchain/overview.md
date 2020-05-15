@@ -2,7 +2,7 @@
 order: 1
 -->
 
-![Welcome to the OKChain](../images/cosmos-hub-image.jpg)
+![Welcome to the OKChain](../img/okchain-image.jpg)
 
 # Introduction
 
