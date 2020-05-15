@@ -1152,9 +1152,9 @@ okchaincli tx order
 
 Secondary sub-commands mainly include the following 2 functions
 
-#### 1.1 Place an order:
+#### 1.1 Place orders:
 ##### Example:
-Create a new limit order
+Place one or multiple orders.
 ```bash
 # place orders
 okchaincli tx order new [flags]
@@ -1190,16 +1190,94 @@ Global Flags:
 ##### Successful response:
 ```
 # example
-okchaincli tx order new --product xxb-08a_okt,xxb-08a_okt -s BUY,BUY -p 1,1 -q 1,1 --from alice
+okchaincli tx order new --product xxb-08a_okt,xxb-08a_okt -s BUY,BUY -p 1,1 -q 1,1 --from captain --gas-prices="0.00000001okt" --gas "200000" -y -b block
 # example return
 {
-  "txhash": "57A390CBBE43548F112956DF6CA7146E14A02720F2895908B3A057136CE0324D"
+  "height": "373",
+  "txhash": "6993FB047F445C24F9463D97E6C2EFCE30009299C885005A982E10417DC2ADD4",
+  "raw_log": "[{\"msg_index\":0,\"success\":true,\"log\":\"\",\"events\":null}]",
+  "logs": [
+    {
+      "msg_index": 0,
+      "success": true,
+      "log": "",
+      "events": null
+    }
+  ],
+  "gas_wanted": "200000",
+  "gas_used": "95042",
+  "events": [
+    {
+      "type": "message",
+      "attributes": [
+        {
+          "key": "sender",
+          "value": "okchain10q0rk5qnyag7wfvvt7rtphlw589m7frsmyq4ya"
+        },
+        {
+          "key": "sender",
+          "value": "okchain10q0rk5qnyag7wfvvt7rtphlw589m7frsmyq4ya"
+        },
+        {
+          "key": "module",
+          "value": "order"
+        },
+        {
+          "key": "orders",
+          "value": "[{\"code\":0,\"msg\":\"\",\"orderid\":\"ID0000000373-1\"},{\"code\":0,\"msg\":\"\",\"orderid\":\"ID0000000373-2\"}]"
+        },
+        {
+          "key": "action",
+          "value": "new"
+        },
+        {
+          "key": "fee",
+          "value": "0.00200000okt"
+        },
+        {
+          "key": "sender",
+          "value": "okchain10q0rk5qnyag7wfvvt7rtphlw589m7frsmyq4ya"
+        }
+      ]
+    },
+    {
+      "type": "transfer",
+      "attributes": [
+        {
+          "key": "recipient",
+          "value": "okchain183rfa8tvtp6ax7jr7dfaf7ywv870sykx3uvcxn"
+        },
+        {
+          "key": "amount",
+          "value": "1.00000000okt"
+        },
+        {
+          "key": "recipient",
+          "value": "okchain183rfa8tvtp6ax7jr7dfaf7ywv870sykx3uvcxn"
+        },
+        {
+          "key": "amount",
+          "value": "1.00000000okt"
+        },
+        {
+          "key": "recipient",
+          "value": "okchain17xpfvakm2amg962yls6f84z3kell8c5ljresa7"
+        },
+        {
+          "key": "amount",
+          "value": "0.00200000okt"
+        }
+      ]
+    }
+  ]
 }
+
 ```
 
 
-#### 1.2 Cancel an order:
+#### 1.2 Cancel orders:
 ##### Example:
+Cancel one or multiple orders.
 ```bash
 okchaincli tx order cancel [order-id] [flags]
 ```
@@ -1234,12 +1312,89 @@ Global Flags:
 ##### Successful response:
 ```
 # example
-okchaincli tx order cancel ID0000000572-1,ID0000000572-1 --from alice 
+okchaincli tx order cancel ID0000000373-1,ID0000000373-2 --from captain --gas-prices="0.00000001okt" --gas "200000" -y -b block
 
 # example return
 {
-  "txhash": "57A390CBBE43548F112956DF6CA7146E14A02720F2895908B3A057136CE0324D"
+  "height": "441",
+  "txhash": "3B139AB85BE6FB05E2E18FD41C7B1D4F70A9FCD2A992476063E5A15C36F0A805",
+  "raw_log": "[{\"msg_index\":0,\"success\":true,\"log\":\"\",\"events\":null}]",
+  "logs": [
+    {
+      "msg_index": 0,
+      "success": true,
+      "log": "",
+      "events": null
+    }
+  ],
+  "gas_wanted": "200000",
+  "gas_used": "86743",
+  "events": [
+    {
+      "type": "message",
+      "attributes": [
+        {
+          "key": "sender",
+          "value": "okchain183rfa8tvtp6ax7jr7dfaf7ywv870sykx3uvcxn"
+        },
+        {
+          "key": "sender",
+          "value": "okchain183rfa8tvtp6ax7jr7dfaf7ywv870sykx3uvcxn"
+        },
+        {
+          "key": "module",
+          "value": "order"
+        },
+        {
+          "key": "orders",
+          "value": "[{\"code\":0,\"msg\":\"0.00000000okt\",\"orderid\":\"ID0000000373-1\"},{\"code\":0,\"msg\":\"0.00000000okt\",\"orderid\":\"ID0000000373-2\"}]"
+        },
+        {
+          "key": "action",
+          "value": "cancel"
+        },
+        {
+          "key": "fee",
+          "value": "0.00200000okt"
+        },
+        {
+          "key": "sender",
+          "value": "okchain10q0rk5qnyag7wfvvt7rtphlw589m7frsmyq4ya"
+        }
+      ]
+    },
+    {
+      "type": "transfer",
+      "attributes": [
+        {
+          "key": "recipient",
+          "value": "okchain10q0rk5qnyag7wfvvt7rtphlw589m7frsmyq4ya"
+        },
+        {
+          "key": "amount",
+          "value": "1.00000000okt"
+        },
+        {
+          "key": "recipient",
+          "value": "okchain10q0rk5qnyag7wfvvt7rtphlw589m7frsmyq4ya"
+        },
+        {
+          "key": "amount",
+          "value": "1.00000000okt"
+        },
+        {
+          "key": "recipient",
+          "value": "okchain17xpfvakm2amg962yls6f84z3kell8c5ljresa7"
+        },
+        {
+          "key": "amount",
+          "value": "0.00200000okt"
+        }
+      ]
+    }
+  ]
 }
+
 ```
 `order-id` A list of orderIds separated by commas
 
@@ -1254,6 +1409,7 @@ okchaincli query order
 Secondary sub-commands mainly include the following functions
 #### 2.1 Order details:
 ##### Example:
+Query the information of a order.
 ```bash
 okchaincli query order detail [orderId]
 ```
@@ -1276,23 +1432,31 @@ Global Flags:
 ##### Successful response:
 ```
 # example
-okchaincli query order detail ID0000000007-0000
+okchaincli query order detail ID0000000525-1
 # example return
 {
- "txHash": "CF8CEC36B97F089DEA243655A70D1CB2AE906D712D71210BCDEBC47F184DB6C2",
- "orderId": "ID0000000007-0000",
- "sender": "cosmos1cwvqt96wj222k2hue4pxcy5nxch6maaklknn7p",
- "product": "mycoin_okt",
- "side": "BUY",
- "price": "10.000000000000000000",
- "quantity": "1.100000000000000000",
- "status": "0",
- "filledAvgPrice": "10.000000000000000000",
- "remainQuantity": "0.100000000000000000",
- "timestamp": "1554273977"
+	"txhash": "B32EC706A2B5ACCF4FC43D6530588C0C9E36E79AC572D3443653281500D46FDA",
+	"order_id": "ID0000000525-1",
+	"sender": "okchain10q0rk5qnyag7wfvvt7rtphlw589m7frsmyq4ya",
+	"product": "xxb-08a_okt",
+	"side": "BUY",
+	"price": "1.00000000",
+	"quantity": "1.00000000",
+	"status": "0",
+	"filled_avg_price": "0.00000000",
+	"remain_quantity": "1.00000000",
+	"remain_locked": "1.00000000",
+	"timestamp": "1589539376",
+	"order_expire_blocks": "259200",
+	"fee_per_block": {
+		"denom": "okt",
+		"amount": "0.00000000"
+	},
+	"extra_info": "{\"newFee\":\"0.00000000okt\"}"
 }
 ```
 #### 2.2 Order depthbook:
+Query the information of the depthbook.
 ##### Example:
 ```bash
 okchaincli query order depthbook [product]
@@ -1320,31 +1484,15 @@ Global Flags:
 okchaincli query order depthbook mycoin_okt
 # example return
 {
- "code": "0",
- "msg": "",
- "asks": [
-  {
-   "price": "10.100000000000000000",
-   "quantity": "1.000000000000000000"
-  }
- ],
- "bids": [
-  {
-   "price": "10.000000000000000000",
-   "quantity": "0.100000000000000000"
-  },
-  {
-   "price": "9.900000000000000000",
-   "quantity": "2.000000000000000000"
-  },
-  {
-   "price": "9.800000000000000000",
-   "quantity": "10.000000000000000000"
-  }
- ]
+	"asks": null,
+	"bids": [{
+		"price": "1.00000000",
+		"quantity": "2.00000000"
+	}]
 }
 ```
-#### 2.3 Query storage information of order modules:
+#### 2.3 order store:
+Query the state of depthbook.
 ##### Example:
 ```bash
 okchaincli query order store
@@ -1374,17 +1522,17 @@ okchaincli query order store
 
 # example return
 {
-	"StoreOrderNum": "1",
+	"StoreOrderNum": "2",
 	"DepthBookNum": {
-		"mycoin_okt": "1"
+		"xxb-08a_okt": "1"
 	},
-	"BookOrderIdsNum": {
-		"bookitem:mycoin_okt:11.10000000:SELL": "1"
+	"BookOrderIDsNum": {
+		"xxb-08a_okt:1.00000000:BUY": "2"
 	}
 }
-
 ```
-#### 2.4 Query all parameters during governance:
+#### 2.4 order parameters:
+Query all parameters during governance
 ##### Example:
 ```bash
 okchaincli query order params
@@ -1412,16 +1560,15 @@ okchaincli query order params
 
 # example return
 {
-  "order_expire_blocks": "86400",
-  "max_deals_per_block": "2000",
-  "new_order": "0.00000000",
-  "cancel": "0.01000000",
-  "cancel_native": "0.00200000",
-  "expire": "0.01000000",
-  "expire_native": "0.00200000",
-  "trade_fee_rate": "0.00100000",
-  "trade_fee_rate_native": "0.00040000"
+  "order_expire_blocks": "259200",
+  "max_deals_per_block": "1000",
+  "fee_per_block": {
+    "denom": "okt",
+    "amount": "0.00000000"
+  },
+  "trade_fee_rate": "0.00100000"
 }
+
 ```
 
 

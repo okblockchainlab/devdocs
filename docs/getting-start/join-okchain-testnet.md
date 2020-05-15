@@ -14,16 +14,80 @@ of OKChain to use and details about the genesis file.
 **You need to [install okchain](./install-okchain.html) before you go further**
 :::
 
+
+## Setting Up a New Node
+
+These instructions are for setting up a brand new full node from scratch.
+
+First, initialize the node and create the necessary config files:
+
+```bash
+okchaind init <your_custom_moniker>
+```
+
+::: warning Note
+Monikers can contain only ASCII characters. Using Unicode characters will render your node unreachable.
+:::
+
+You can edit this `moniker` later, in the `~/.okchaind/config/config.toml` file:
+
+```toml
+# A custom human readable name for this node
+moniker = "<your_custom_moniker>"
+```
+
+You can edit the `~/.okchaind/config/okchaind.toml` file in order to enable the anti spam mechanism and reject incoming transactions with less than the minimum gas prices:
+
+```
+# This is a TOML config file.
+# For more information, see https://github.com/toml-lang/toml
+
+##### main base config options #####
+
+# The minimum gas prices a validator is willing to accept for processing a
+# transaction. A transaction's fees must meet the minimum of any denomination
+# specified in this config (e.g. 10uatom).
+
+minimum-gas-prices = ""
+```
+
+Your full node has been initialized! 
+
+## Genesis & Seeds
+
+### Copy the Genesis File
+
+Fetch the testnet's `genesis.json` file into `okchaind`'s config directory.
+
+Note we use the `latest` directory in the [testnets repo](https://github.com/okex/testnets) which contains details for the testnet like the latest version and the genesis file. 
+
+To verify the correctness of the configuration run:
+
+```bash
+okchaind start
+```
+
+### Add Seed Nodes
+
+Your node needs to know how to find peers. You'll need to add healthy seed nodes to `$HOME/.okchaind/config/config.toml`. The [testnets repo](https://github.com/okex/testnets) contains links to some seed nodes.
+
+For more information on seeds and peers, you can [read this](https://docs.tendermint.com/master/spec/p2p/peer.html).
+
 ## Starting a New Node
 
-> NOTE: If you ran a full node on a previous testnet, please skip to [Upgrading From Previous Testnet](#upgrading-from-previous-testnet).
+Start the full node with this command:
 
-To start a new node, the mainnet instructions apply:
+```bash
+okchaind start
+```
 
-- [Join the mainnet](./join-okchain-mainnet.html)
-- [Deploy a validator](../validators/validators-guide-cli.html)
+Check that everything is running smoothly:
 
-The only difference is the OKChain version and genesis file. See the [testnet repo](https://github.com/okex/testnets) for information on testnets, including the correct version of the OKChain to use and details about the genesis file.
+```bash
+okchaincli status
+```
+
+See the [testnet repo](https://github.com/okex/testnets) for information on testnets, including the correct version of the OKChain to use and details about the genesis file.
 
 ## Upgrading Your Node
 
@@ -65,3 +129,7 @@ Note we use `master` here since it contains the latest stable release.
 See the [testnet repo](https://github.com/okex/testnets) for details on which version is needed for which testnet, and the [OKChain release page](https://github.com/okex/okchain/releases) for details on each release.
 
 Your full node has been cleanly upgraded!
+
+### Upgrade to Validator Node
+
+You now have an active full node. What's the next step? You can upgrade your full node to become a OKChain Validator. The top 100 validators have the ability to propose new blocks to the OKChain. Continue onto [the Validator Setup](../validators/validators-guide-cli.md).
