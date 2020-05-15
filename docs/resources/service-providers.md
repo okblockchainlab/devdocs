@@ -22,16 +22,16 @@ There are three main pieces to consider:
 
 We will describe the steps to run and interact with a full-node for the OKChain. For other SDK-based blockchain, the process should be similar. 
 
-First, you need to [install the software](../okchain-tutorials/installation.md).
+First, you need to [install the software](../getting-start/install-okchain.html).
 
-Then, you can start [running a full-node](../okchain-tutorials/join-mainnet.md).
+Then, you can start [running a full-node(testnet)](../getting-start/join-okchain-testnet.html).
 
 ### Command-Line interface
 
 ## Setting Up `okchaincli`
 
 ::: tip
-**Before setting up `okchaincli`, make sure you have set up a way to [access the OKChain network](#accessing-the-cosmos-hub-network)**
+**Before setting up `okchaincli`, make sure you have set up a way to access the OKChain network**
 :::
 
 ::: warning

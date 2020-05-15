@@ -11,7 +11,7 @@ of OKChain to use and details about the genesis file.
 :::
 
 ::: warning
-**You need to [install okchain](./installation.md) before you go further**
+**You need to [install okchain](./install-okchain.html) before you go further**
 :::
 
 ## Starting a New Node
@@ -20,8 +20,8 @@ of OKChain to use and details about the genesis file.
 
 To start a new node, the mainnet instructions apply:
 
-- [Join the mainnet](./join-okchain-mainnet.md)
-- [Deploy a validator](../validators/validators-guide-cli.md)
+- [Join the mainnet](./join-okchain-mainnet.html)
+- [Deploy a validator](../validators/validators-guide-cli.html)
 
 The only difference is the OKChain version and genesis file. See the [testnet repo](https://github.com/okex/testnets) for information on testnets, including the correct version of the OKChain to use and details about the genesis file.
 

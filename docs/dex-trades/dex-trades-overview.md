@@ -15,7 +15,7 @@ OKChian-OpenDEX provides basic functions. Orders and matching occur on the chain
 
 But at the same time, OKChain itself is an open source project, anyone can develop their own set of UI to help DEX Trade make better trading decisions.
 
+
 ## About Matching System
 
-For a practical guide on matching engine , click [periodic auction](../concepts/periodic-auction.md).
-
+For a practical guide on matching engine , click [periodic auction](../concepts/periodic-auction.html).

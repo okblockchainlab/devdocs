@@ -20,7 +20,7 @@ OKChain offers 4 types of proposals for different purposes:
 1. [Text Proposal](./governance/text.html)： to obtain network views of a topic.
 2. [Parameter Proposal](./governance/parameter.html)： to change system parameters. 
 3. [Delist Proposal](./governance/delist.html): to delist a token pair from DEX.
-4. [Software Upgrade Proposal](./governance/upgrade.html)： to support whole network upgrade.
+4. Software Upgrade Proposal： to support whole network upgrade.
 
 Except for text proposals, there are four proposal stages, including initiation, deposit_period, vote_period and execution. Execution is not a text proposal's stage.
 

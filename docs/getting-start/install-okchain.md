@@ -6,8 +6,8 @@ order: 2
 
 This guide will explain how to install the `okchaind` and `okchaincli` entrypoints
 onto your system. With these installed on a server, you can participate in the
-mainnet as either a [Full Node](./join-okchain-mainnet.md) or a
-[Validator](../validators/validators-guide-cli.md).
+mainnet as either a [Full Node](./join-okchain-mainnet.html) or a
+[Validator](../validators/validators-guide-cli.html).
 
 ## Install Go
 
@@ -98,4 +98,4 @@ To test any changes made in the Cosmos-SDK or Tendermint, a `replace` clause nee
 
 ## Next
 
-Now you can [join the mainnet](./join-okchain-mainnet.md), [the public testnet](./join-okchain-testnet.md) or [create you own testnet](./deploy-you-own-okchain-testnet.md)
+Now you can [join the mainnet](./join-okchain-mainnet.html), [the public testnet](./join-okchain-testnet.html) or [create you own testnet](./deploy-you-own-okchain-testnet.html)
