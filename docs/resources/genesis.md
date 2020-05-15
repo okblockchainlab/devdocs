@@ -446,4 +446,4 @@ A `gentx` can be added manually to the genesis file, or via the following comman
 okchaind collect-gentxs
 ```
 
-This command will add all the `gentxs` stored in `~/.okchaind/config/gentx` to the genesis file. In order to create a genesis transaction, click [here](../validators/validators-guide-cli.md#participate-in-genesis-as-a-validator).
+This command will add all the `gentxs` stored in `~/.okchaind/config/gentx` to the genesis file. In order to create a genesis transaction, click [here](../validators/validators-guide-cli.html#participate-in-genesis-as-a-validator).
