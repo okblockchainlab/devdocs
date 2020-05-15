@@ -21,6 +21,6 @@ Therefore, the DEX operator of OKChain is proposed to solve the problem of opera
 
 ## Set Up a Website
 
-可选的，DEX operator可以选择公开一个自己的website，用以提升自己的公信力，同时方便生态中的其他合作伙伴获得你的更多信息，但这并不是必须的。
+Optionally, the DEX operator can choose to open a website of its own to enhance its credibility and facilitate other partners in the ecosystem to get more information about you, but this is not necessary.
 
-For a practical guide on how to become a DEX operator, click [DEX Operators Guide (CLI)](../dex-operators/dex-operators-guide-cli.md).
+For a practical guide on how to become a DEX operator, click [DEX Operators Guide (CLI)](../dex-operators/dex-operators-guide-cli.html).
