@@ -31,6 +31,7 @@ correct [released version](https://github.com/okex/okchain/releases).
 
 ```bash
 git clone -b <latest-release-tag> https://github.com/okex/okchain
+export GO111MODULE=on
 cd okchain && make install
 ```
 
@@ -92,7 +93,7 @@ To test any changes made in the Cosmos-SDK or Tendermint, a `replace` clause nee
 
 - Make appropriate changes
 - Add `replace github.com/cosmos/cosmos-sdk => /path/to/clone/cosmos-sdk` to `go.mod`
-- Run `make clean install` or `make clean build`
+- Run `make install` or `make build`
 - Test changes
 
 ## Next
