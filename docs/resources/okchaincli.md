@@ -2149,7 +2149,7 @@ Usage:
     okchaincli query distr community-pool [flags]
 
 Flags：
-	--node ${url}  节点地址
+	--node ${url}  validator address
 ```
 
 ### Query validator commission rewards from delegators
@@ -2529,8 +2529,8 @@ Usage:
     okchaincli tx gov submit-proposal community-pool-spend [proposal-file] [flags]
 
 Flags：
-	--from ${name} 指定命令发送者账户 
-	--node ${url}  节点地址 nodes address 
+	--from ${name} Name or address of private key with which to sign 
+	--node ${url}  validator address 
 ```
 
 ### Query proposal
