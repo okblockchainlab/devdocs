@@ -69,7 +69,7 @@ okchaind start
 
 ### Add Seed Nodes
 
-Your node needs to know how to find peers. You'll need to add healthy seed nodes to `$HOME/.okchaind/config/config.toml`. The [`testnets`](https://github.com/okex/testnets) repo contains links to some seed nodes.
+Your node needs to know how to find peers. You'll need to add healthy seed nodes to `$HOME/.okchaind/config/config.toml`. The [testnets repo](https://github.com/okex/testnets) contains links to some seed nodes.
 
 For more information on seeds and peers, you can [read this](https://docs.tendermint.com/master/spec/p2p/peer.html).
 
