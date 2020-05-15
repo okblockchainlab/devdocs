@@ -7,19 +7,20 @@ The overall process of a proposal is shown below:
 Details:  
 1. The proposer should pledge okt when initiating a proposal to prevent malicious initiation of a proposal.
 2. The voting participants are bond okt holders, except for the following two cases:
-&emsp;&emsp;a. the okt holder bond/unbond to proposer after entering vote_period
-&emsp;&emsp;b. the okt holder becomes proposer after entering vote_period
-3. The weight of the vote depends on the number of okts in the bond.
+&emsp;&emsp;a. the okt holder bond/unbond to validator after entering vote_period
+&emsp;&emsp;b. the okt holder becomes validator after entering vote_period
+3. The weight of the vote depends on the amount of okts in the bond.
 4. To prevent duplicate voting:
 &emsp;&emsp;a. the voting period is smaller than unbond_period. The minimum length of the voting period is 72h (adjustable depending on the type of proposals) .
-&emsp;&emsp;b. if the delegator votes before the proposer votes on his behalf, the weight of the proposer's vote does not include the weight of okt in his bond.  
-&emsp;&emsp;c. if the delegator votes after the proposer votes on his behalf, the weight of the voting result replaces the weight of the vote cast by the proposer on behalf of the delegator.
+&emsp;&emsp;b. if the delegator votes before the validator votes on his behalf, the weight of the validator's vote does not include the weight of okt in his bond.  
+&emsp;&emsp;c. if the delegator votes after the validator votes on his behalf, the weight of the voting result replaces the weight of the vote cast by the validator on behalf of the delegator.
 
 ## Proposal types
 OKChain offers 4 types of proposals for different purposes: 
 1. [Text Proposal](./governance/text.md)： to obtain network views of a topic.
 2. [Parameter Proposal](./governance/parameter.md)： to change system parameters. 
-3. [Software Upgrade Proposal](./governance/upgrade.md)： to support whole network upgrade.
+3. [Delist Proposal](./governance/delist.md): to delist a token pair from DEX.
+4. [Software Upgrade Proposal](./governance/upgrade.md)： to support whole network upgrade.
 
 Except for text proposals, there are four proposal stages, including initiation, deposit_period, vote_period and execution. Execution is not a text proposal's stage.
 
@@ -47,7 +48,11 @@ parameter proposal parameters
 &emsp;&emsp;deposit period(`ParamChangeMaxDepositPeriod`): 24h   
 &emsp;&emsp;minimum deposit(`ParamChangeMinDeposit`): 100okt  
 &emsp;&emsp;voting period(`ParamChangeVotingPeriod`): 72h   
-&emsp;&emsp;maximum block height(`ParamChangeMaxBlockHeight`)：100000    
+&emsp;&emsp;maximum block height(`ParamChangeMaxBlockHeight`)：100000
+delist proposal parameters   
+&emsp;&emsp;deposit period(`ParamChangeMaxDepositPeriod`): 24h   
+&emsp;&emsp;minimum deposit(`ParamChangeMinDeposit`): 100okt  
+&emsp;&emsp;voting period(`ParamChangeVotingPeriod`): 72h
 software upgrade proposal parameters
 &emsp;&emsp;deposit period(`AppUpgradeMaxDepositPeriod`): 24h   
 &emsp;&emsp;minimum deposit(`AppUpgradeMinDeposit`): 100okt   
