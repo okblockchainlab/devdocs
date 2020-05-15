@@ -35,7 +35,6 @@ Upgrade a node to a validator through self-delegation and set the description, c
   okchaincli tx staking create-validator --amount=2okt --pubkey=$(okchaind tendermint show-validator) --moniker="my nickname" --identity="logo|||http://mywebsite/pic/logo.jpg" --website="http://mywebsite" --details="my slogan" --from jack
 ```
 
-* amount indicates the number of self-delegated okt
 * pubkey represents the tendermint public key of the current node
 * moniker indicates the alias of the validator
 * identity specifies the address of the validator’s profile picture
@@ -57,17 +56,6 @@ okchaincli tx staking edit-validator --moniker=“my new nickname” --identity=
 - details indicate the detailed description of the validator to be updated
 - from specifies the operator’s account, which is jack here
 
-
-### Delegate proof of stake
-
-okchain users can delegate their proof of stake to several validators to authorize them to perform related obligations on their behalf, such as voting on proposals. By delegating proof of stake, users can participate in okchain governance.
-
-```bash
-okchaincli tx staking delegate  20okt  --from rose
-* In the example, okchainvaloper1005qzgwplwu8hf9pjhhtlm0t2x27hyppgqc2w6 is the validator’s address, and 20okt is the number of okt to be delegated.
-```
-
-* from indicates the delegate user’s account, which is rose here
 
 ### Vote
 
