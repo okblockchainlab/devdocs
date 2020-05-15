@@ -63,10 +63,10 @@ duties of proposers
 
 A proposer has two main duties:
 
--  \*\* Able to continuously run the correct version of the software:
-   \*\* Proposers need to ensure that their servers are always online
+-  Able to continuously run the correct version of the software:
+    Proposers need to ensure that their servers are always online
    and their private keys are not compromised.
--  \*\* Actively participate in governance: \*\* Proposers are required
+-  Actively participate in governance: Proposers are required
    to vote on each proposal.
 
 In addition, proposers will be active members of the community. They
