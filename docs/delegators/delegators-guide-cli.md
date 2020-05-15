@@ -223,7 +223,7 @@ okchaincli config trust-node false
 Finally, let us set the `chain-id` of the blockchain we want to interact with:
 
 ```bash
-okchaincli config chain-id myokchain
+okchaincli config chain-id okchain
 ```
 
 ## Querying the State
