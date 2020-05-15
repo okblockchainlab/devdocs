@@ -80,13 +80,14 @@ okchaincli config indent true
 * [Account](#account)  
 * [Token](#token)  
 * [Dex](#dex)  
-* [Send](#send)  
 * [Orders](#orders)  
 * [Backend](#backend)  
 * [Staking](#staking)  
 * [Distribution](#distribution)  
 * [Governance](#governance)  
+* [Params](#params)  
 * [Slashing](#slashing)  
+* [Debug](#debug)  
 
 
 
@@ -297,7 +298,7 @@ okchaincli query account <address>
 Token attributes
 
 |      Name      |      Type       |            Description             |
-| :------------: | :-------------: | :--------------------------------: |
+| -------------- | --------------- | ---------------------------------- |
 |     Symbol     |     string      |    unique token ticker, eg. bcoin-y60  |
 | OriginalSymbol |     string      | original token ticker entered by the user, eg. bcoin |
 |      Desc      |     string      |     token description limited to 256 bytes     |
@@ -314,8 +315,51 @@ okchaincli tx token [command]
 ```
 
 Secondary sub-commands mainly include the following 7 functions
+### 1. Transfer
 
-### 1. Issue tokens：
+```bash
+okchaincli tx send <addr> <amount> --from <name>
+```
+
+#### Parameter description
+  
+| **Name** | **Type** |                    **Description**                    |
+  | :------: | :------: | :---------------------------------------------------: |
+  |   addr   |  string  |                  recipient address                   |
+  |  amount  |  string  | transfer amount, covering various cryptocurrencies separated by commas, eg. 1okt, 2bcoin |
+  |   from   |  String  |                      token owner                       |
+  
+#### Example
+
+```bash
+okchaincli tx send okchain1jrhfgvmun4wd5qekxg2ma4xr405pn4dpwtx2qf 2okt --from alice -b block
+```
+#### Successful response:
+```
+{
+  "height": "63",
+  "txhash": "AF5742022E2A183AB0C9BB90F130BFBBFEE1E69C05B20F4E417C2C9E93A52A16",
+  "raw_log": "[{\"msg_index\":\"0\",\"success\":true,\"log\":\"\"}]",
+  "logs": [
+    {
+      "msg_index": "0",
+      "success": true,
+      "log": ""
+    }
+  ],
+  "tags": [
+    {
+      "key": "fee",
+      "value": "0.01250000 okt"
+    },
+    {
+      "key": "action",
+      "value": "send"
+    }
+  ]
+}
+```
+### 2. Issue tokens：
 #### parameter description:
 
   |        Name        |  Type  |                       **Description**                        |
@@ -364,7 +408,7 @@ okchaincli tx token issue --from alice --symbol bcoin -n 200000 -w 'bcoin' --des
   ]
 }
 ```
-### 2. Increase the supply of tokens：
+### 3. Increase the supply of tokens：
 #### Parameter description:
 
   |  Name  |  Type  |    **Description**    |
@@ -405,8 +449,7 @@ okchaincli tx token mint --amount 10000000 --symbol okt --from alice -b block
    ]
 }
 ```
-
-### 3. Burn tokens：
+### 4. Burn tokens：
 #### Parameter description:
 
  |  Name  |  Type  |        Description         |
@@ -447,94 +490,7 @@ okchaincli tx token burn --from alice --symbol okt --amount 100.0 -b block
   ]
 }
 ```
-
-### 4. Freeze tokens:
-#### Parameter description:
-
-  |  Name  |  Type  |       Description        |
-  | :----: | :----: | :----------------------: |
-  | amount | string | amount of tokens frozen (decimal places allowed) |
-  | symbol | string |  token symbol   |
-  |  from  | string |        token owner        |
-
-#### Example:
-The user freezes the tokens in his account
-```bash
-okchaincli tx token freeze [flags]
-```
-#### Successful response:
-```
-okchaincli tx token freeze --from alice --symbol okt --amount 0.1 -b block
-  # Example output
-{
-  "height": "341062",
-  "txhash": "1760D4D004FBA262AF77502C7DAA080D86CDFFD1335D924431530BE0D2207597",
-  "raw_log": "[{\"msg_index\":\"0\",\"success\":true,\"log\":\"\"}]",
-  "logs": [
-    {
-      "msg_index": "0",
-      "success": true,
-      "log": ""
-    }
-  ],
-  "tags": [
-    {
-      "key": "fee",
-      "value": "0.10000000 okt"
-    },
-    {
-      "key": "action",
-      "value": "freeze"
-    }
-  ]
-}
-```
-
-### 5. Unfreeze tokens：
-#### Parameter description:
-
-  |  Name  |  Type  |       Description        |
-  | :----: | :----: | :----------------------: |
-  | amount | string | amount of tokens unfrozen (decimal places allowed) |
-  | symbol | string |  token symbol   |
-  |  from  | string |        token owner        |
-
-#### Example:
-The user unfreezes the tokens in his account
-```bash
-okchaincli tx token unfreeze [flags]
-```
-#### Successful response:
-
-```
-  okchaincli tx token unfreeze --from alice --symbol okt --amount 0.1 -b block
-  
-  # Example output
-  {
-    "height": "341129",
-    "txhash": "BDABBFE9262A5ED46F38920434717EC90BF883620A30460FAC9E959D425E7176",
-    "raw_log": "[{\"msg_index\":\"0\",\"success\":true,\"log\":\"\"}]",
-    "logs": [
-      {
-        "msg_index": "0",
-        "success": true,
-        "log": ""
-      }
-    ],
-    "tags": [
-      {
-        "key": "fee",
-        "value": "0.10000000 okt"
-      },
-      {
-        "key": "action",
-        "value": "unfreeze"
-      }
-    ]
-  }
-```
-
-### 6. Query token information:
+### 5. Query token information:
 #### Example:
 Query token information
 ```bash
@@ -553,8 +509,7 @@ Query token information
     "mintable": true
   }
 ```
-
-### 7. Transfer multiple tokens to users at the same time: 
+### 6. Transfer multiple tokens to users at the same time: 
 #### Example:
 Transfer multiple tokens to users at the same time and specify the transfer files through --transfers-file. When --transfers-file is specified, --transfers is ignored
 ```bash
@@ -589,8 +544,84 @@ okchaincli tx token multi-send [flags]
     ]
   }
 ```
+### 7. Multi-signature transfer
 
+Multi-signature transfer consists of multiple steps:
 
+#### 7.1. Creat accounts p1, p2, p3：
+Example:
+```bash
+okchaincli keys add --pubkey=cosmospub1addwnpepqtg367t3j6myh4ces0luq3f6g87ptzwszpl9g5r28tgavypkdmm2w5l4zuq p1
+
+okchaincli keys add --pubkey=cosmospub1addwnpepqg334a4my6ufrs7r0ajsd6lxac9arsvtqljf0fzrgr27xvf3n5uugpsxna8 p2
+
+okchaincli keys add --pubkey=cosmospub1addwnpepqd7jd60n88tk98hyh72xsw48pjpfhdw0cd77ju59eqc88sxscfjkgx7tyfc p3
+```
+
+#### 7.2. Generate multi-signature public keys:
+
+* Aggregate multi-signature public keys p1, p2 and p3 and set the signature threshold as N, which means the transfer is effective after obtaining N people's signatures.
+
+* Set the signature threshold as 2 in the example:
+```bash  
+okchaincli keys add --multisig-threshold=2 --multisig=p1,p2,p3 p1p2p3
+```
+
+`--multisig-threshold` is the threshold for the number of private keys involved in multi-signature transactions.
+
+`--multisig` tag must contain the names of sub-public keys to be aggregated into a single public key, which will be generated in a local database and stored as `new_key_name`. All names provided via `--multisig` must have already existed in the local database.
+
+* Display user addresses and deposit into them:
+Display user addresses p1, p2, p3 and deposit 100.1 OKT into them
+* Example:
+```bash
+okchaincli keys show -a p1p2p3
+okchaincli tx send cosmos1553hrs03kl2tlq47d9f6j477xdjp362l2cfetl 100.1okt --from=alice
+okchaincli query account cosmos1553hrs03kl2tlq47d9f6j477xdjp362l2cfetl
+```
+#### 7.3. Multi-signature:
+##### Create an unsigned transaction:
+Create an unsigned transaction `unsignedTx.json`
+###### Example:
+```bash
+okchaincli tx send cosmos1xd07r5a3e2mf4srqck3hvzww24c65hpt604ge5 10okt \
+  --chain-id=okchain \
+  --from=cosmos1553hrs03kl2tlq47d9f6j477xdjp362l2cfetl \
+  --generate-only > unsignedTx.json
+```
+##### p1, p2, p3 sign:
+###### Example:
+```bash
+okchaincli tx sign \
+  --multisig=cosmos1553hrs03kl2tlq47d9f6j477xdjp362l2cfetl \
+  --from=alice \
+  --output-document=p1signature.json \
+  unsignedTx.json
+
+ 
+okchaincli tx sign \
+  --multisig=cosmos1553hrs03kl2tlq47d9f6j477xdjp362l2cfetl \
+  --from=jack \
+  --output-document=p2signature.json \
+  unsignedTx.json 
+```
+##### Create an aggregate signature: 
+Create an aggregate signature `signedTx.json` since the default threshold is set to 2 so that a transaction with p1p2 can be executed.
+###### Example:
+```bash 
+okchaincli tx multisign \
+  unsignedTx.json \
+  p1p2p3 \
+  p1signature.json p2signature.json > signedTx.json
+```
+#### 7.4. Execute a transaction signedTx.json：
+Execute a signed `signedTx.json` offline and query the balance for confirmation.
+##### Example:
+```bash 
+okchaincli tx broadcast signedTx.json
+
+okchaincli query account cosmos1553hrs03kl2tlq47d9f6j477xdjp362l2cfetl
+```
 ### 8. Transfer token ownership:
 
 We support the function where token ownership can be transferred to another person. In order to ensure the security of token ownership transfer, multi signatures are required to validate the transfer. The process consists of the following 4 steps:
@@ -1084,133 +1115,6 @@ Example:
 
 Usage:
     okchaincli query dex products-delisting [flags]
-```
-
-
-## Send
-
-### 1. Transfer
-
-```bash
-okchaincli tx send <addr> <amount> --from <name>
-```
-
-#### Parameter description
-  
-| **Name** | **Type** |                    **Description**                    |
-  | :------: | :------: | :---------------------------------------------------: |
-  |   addr   |  string  |                  recipient address                   |
-  |  amount  |  string  | transfer amount, covering various cryptocurrencies separated by commas, eg. 1okt, 2bcoin |
-  |   from   |  String  |                      token owner                       |
-  
-#### Example
-
-```bash
-okchaincli tx send okchain1jrhfgvmun4wd5qekxg2ma4xr405pn4dpwtx2qf 2okt --from alice -b block
-```
-#### Successful response:
-```
-{
-  "height": "63",
-  "txhash": "AF5742022E2A183AB0C9BB90F130BFBBFEE1E69C05B20F4E417C2C9E93A52A16",
-  "raw_log": "[{\"msg_index\":\"0\",\"success\":true,\"log\":\"\"}]",
-  "logs": [
-    {
-      "msg_index": "0",
-      "success": true,
-      "log": ""
-    }
-  ],
-  "tags": [
-    {
-      "key": "fee",
-      "value": "0.01250000 okt"
-    },
-    {
-      "key": "action",
-      "value": "send"
-    }
-  ]
-}
-```
-
-### 2. Multi-signature transfer
-
-Multi-signature transfer consists of multiple steps:
-
-#### 2.1. Creat accounts p1, p2, p3：
-Example:
-```bash
-okchaincli keys add --pubkey=cosmospub1addwnpepqtg367t3j6myh4ces0luq3f6g87ptzwszpl9g5r28tgavypkdmm2w5l4zuq p1
-
-okchaincli keys add --pubkey=cosmospub1addwnpepqg334a4my6ufrs7r0ajsd6lxac9arsvtqljf0fzrgr27xvf3n5uugpsxna8 p2
-
-okchaincli keys add --pubkey=cosmospub1addwnpepqd7jd60n88tk98hyh72xsw48pjpfhdw0cd77ju59eqc88sxscfjkgx7tyfc p3
-```
-
-#### 2.2. Generate multi-signature public keys:
-
-* Aggregate multi-signature public keys p1, p2 and p3 and set the signature threshold as N, which means the transfer is effective after obtaining N people's signatures.
-
-* Set the signature threshold as 2 in the example:
-```bash  
-okchaincli keys add --multisig-threshold=2 --multisig=p1,p2,p3 p1p2p3
-```
-
-`--multisig-threshold` is the threshold for the number of private keys involved in multi-signature transactions.
-
-`--multisig` tag must contain the names of sub-public keys to be aggregated into a single public key, which will be generated in a local database and stored as `new_key_name`. All names provided via `--multisig` must have already existed in the local database.
-
-* Display user addresses and deposit into them:
-Display user addresses p1, p2, p3 and deposit 100.1 OKT into them
-* Example:
-```bash
-okchaincli keys show -a p1p2p3
-okchaincli tx send cosmos1553hrs03kl2tlq47d9f6j477xdjp362l2cfetl 100.1okt --from=alice
-okchaincli query account cosmos1553hrs03kl2tlq47d9f6j477xdjp362l2cfetl
-```
-#### 2.3. Multi-signature:
-##### Create an unsigned transaction:
-Create an unsigned transaction `unsignedTx.json`
-###### Example:
-```bash
-okchaincli tx send cosmos1xd07r5a3e2mf4srqck3hvzww24c65hpt604ge5 10okt \
-  --chain-id=okchain \
-  --from=cosmos1553hrs03kl2tlq47d9f6j477xdjp362l2cfetl \
-  --generate-only > unsignedTx.json
-```
-##### p1, p2, p3 sign:
-###### Example:
-```bash
-okchaincli tx sign \
-  --multisig=cosmos1553hrs03kl2tlq47d9f6j477xdjp362l2cfetl \
-  --from=alice \
-  --output-document=p1signature.json \
-  unsignedTx.json
-
- 
-okchaincli tx sign \
-  --multisig=cosmos1553hrs03kl2tlq47d9f6j477xdjp362l2cfetl \
-  --from=jack \
-  --output-document=p2signature.json \
-  unsignedTx.json 
-```
-##### Create an aggregate signature: 
-Create an aggregate signature `signedTx.json` since the default threshold is set to 2 so that a transaction with p1p2 can be executed.
-###### Example:
-```bash 
-okchaincli tx multisign \
-  unsignedTx.json \
-  p1p2p3 \
-  p1signature.json p2signature.json > signedTx.json
-```
-#### 2.4. Execute a transaction signedTx.json：
-Execute a signed `signedTx.json` offline and query the balance for confirmation.
-##### Example:
-```bash 
-okchaincli tx broadcast signedTx.json
-
-okchaincli query account cosmos1553hrs03kl2tlq47d9f6j477xdjp362l2cfetl
 ```
 
 
@@ -2205,8 +2109,8 @@ Usage:
 
 
 Flags：
-	--from ${name} 指定命令发送者账户
-	--node ${url}  节点地址
+	--from ${name} Name or address of private key with which to sign
+	--node ${url}  <host>:<port> to tendermint rpc interface for this chain (default "tcp://localhost:26657")
 ```
 
 
@@ -2269,7 +2173,6 @@ Flags：
 ## Governance
 
 ### Dex delist proposal
-
 
 Submit a dex delist proposal along with an initial deposit.
 
@@ -2704,21 +2607,24 @@ Global Flags:
       --trace             print out full stack trace on errors
 ```
 
-#### Query governance parameters
 
+## Params
+Query parameters of params:
+
+#### Query governance parameters
 
 Query the all the parameters for the governance process.
 
 ```shell
-okchaincli query gov params -h
+okchaincli query params params -h
 
 Query the all the parameters for the governance process.
 
 Example:
-  okchaincli query gov params
+  okchaincli query params params
 
 Usage:
-  okchaincli query gov params [flags]
+  okchaincli query params params [flags]
 
 Flags:
       --height int    Use a specific height to query state at (this can error if the node is pruning state)
@@ -2744,10 +2650,6 @@ Global Flags:
 | MaxDepositPeriod        | Text/parameter modification/app upgrade deposit period |                                                                         
 | MinDeposit              | Text/parameter modification/app Upgrade proposal maximum deposit <br>If the proposed mortgage exceeds this value, the Voting Period will be effective    |                           |
 | VotingPeriod            | Text/Parameter Modification/app upgrade proposal voting period|                                                                        
-| Quorum                  | weight threshold for voting on the entire network when the voting period ends，for [voting statistics]()|                                                                                     
-| Threshold               | weight threshold for the proportion of Yes votes to all non-abstained votes，for[voting statistics]() |                                                                       
-| Veto                    | weight threshold for the proportion of NoWithVeto votes to all votes，for[voting statistics]()  | 
-| YesInVotePeriod | weight threshold for the proportion of Yes votes to totalBonded before the voting ends |                                                                                                       
 | MaxTxNumPerBlock        | maximum number of transactions contained in each block  |
 
 
@@ -2810,5 +2712,61 @@ Flags:
 ```
 
 
+## Debug
+### set-loglevel
 
+Set the okchaind log level  
 
+```shell
+$ okchaincli debug set-loglevel -h
+
+Example：
+  $ okchaincli debug set-loglevel "main:info,state:info"
+
+  $ okchaincli debug set-loglevel "upgrade:error"
+
+Usage:
+  okchaincli debug set-loglevel [flags]
+
+Flags:
+      --height int    Use a specific height to query state at (this can error if the node is pruning state)
+  -h, --help          help for set-loglevel
+      --indent        Add indent to JSON response
+      --node string   <host>:<port> to Tendermint RPC interface for this chain (default "tcp://localhost:26657")
+      --trust-node    Trust connected full node (don't verify proofs for responses)
+
+Global Flags:
+      --chain-id string   Chain ID of tendermint node
+  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
+      --home string       directory for config and data (default "/Users/yourname/.okchaincli")
+  -o, --output string     Output format (text|json) (default "text")
+      --passwd string     Pass word of sender (default "12345678")
+      --trace             print out full stack trace on errors
+```
+
+### dump
+
+Dump the data of kv-stores by a module name  
+
+```shell
+$ okchaincli debug dump -h
+Dump the data of kv-stores by a module name
+
+Usage:
+  okchaincli debug dump [module] [flags]
+
+Flags:
+     --height int    Use a specific height to query state at (this can error if the node is pruning state)
+  -h, --help          help for dump
+     --indent        Add indent to JSON response
+     --node string   <host>:<port> to Tendermint RPC interface for this chain (default "tcp://localhost:26657")
+     --trust-node    Trust connected full node (don't verify proofs for responses)
+   
+  Global Flags:
+     --chain-id string   Chain ID of tendermint node
+  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
+     --home string       directory for config and data (default "/Users/yourname/.okchaincli")
+  -o, --output string     Output format (text|json) (default "text")
+     --passwd string     Pass word of sender (default "12345678")
+     --trace             print out full stack trace on errors
+```
