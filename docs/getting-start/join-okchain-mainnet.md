@@ -11,7 +11,7 @@ of the OKChain to use and details about the genesis file.
 :::
 
 ::: warning
-**You need to [install okchain](./install-okchain.md) before you go further**
+**You need to [install okchain](./install-okchain.html) before you go further**
 :::
 
 ## Setting Up a New Node
@@ -66,7 +66,7 @@ curl https://raw.githubusercontent.com/okex/launch/master/genesis.json > $HOME/.
 Note we use the `latest` directory in the [launch repo](https://github.com/okex/launch) which contains details for the mainnet like the latest version and the genesis file. 
 
 ::: tip
-If you want to connect to the public testnet instead, click [here](./join-okchain-testnet.md)
+If you want to connect to the public testnet instead, click [here](./join-okchain-testnet.html)
 :::
 
 To verify the correctness of the configuration run:
@@ -164,4 +164,4 @@ okchaind export --height [height] --for-zero-height > [filename].json
 ```
 ## Upgrade to Validator Node
 
-You now have an active full node. What's the next step? You can upgrade your full node to become a OKChain Validator. The top 100 validators have the ability to propose new blocks to the OKChain. Continue onto [the Validator Setup](../validators/validators-guide-cli.md).
+You now have an active full node. What's the next step? You can upgrade your full node to become a OKChain Validator. The top 100 validators have the ability to propose new blocks to the OKChain. Continue onto [the Validator Setup](../validators/validators-guide-cli.html).

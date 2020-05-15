@@ -17,8 +17,8 @@ OKChian-OpenDEX提供了基础的功能，订单和撮合都是在链上发生�
 
 ## 关于竞价撮合
 
-For a practical guide on matching engine , click [periodic auction](../concepts/periodic-auction.md).
+For a practical guide on matching engine , click [periodic auction](../concepts/periodic-auction.html).
 
 ## 交易
 
-For a practical guide on how to trade on okchain , click [DEX Traders Guide (CLI)](../dex-trades/dex-trades-guide-cli.md).
+For a practical guide on how to trade on okchain , click [DEX Traders Guide (CLI)](../dex-trades/dex-trades-guide-cli.html).

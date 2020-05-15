@@ -22,7 +22,7 @@ OKChain-OpenDEX, as the first project of the OKChain ecosystem, is a middleware 
 
 Do you have OKT tokens? With OKT, you have the superpower to contribute to the security and governance of the OKChain. Delegate your OKT to one or more of the 100 validators on the OKChain blockchain to earn more OKT through Proof-of-Stake. You can also vote with your OKT to influence the future of the OKChain through on-chain governance proposals.
 
-Learn more about [being a delegator](../delegators/delegator-faq.md), learn about [the security risks](../delegators/delegator-security.md), and start participating with one of the following wallets.
+Learn more about [being a delegator](../delegators/delegators-faq.html), and start participating with one of the following wallets.
 
 ## OKChain Wallets
 
@@ -61,13 +61,13 @@ These block explorers allow you to search, view and analyze OKChain data&mdash;l
 
 ## OKChain CLI
 
-`okchaincli` is a command-line interface that lets you interact with the OKChain. `okchaincli` is the only tool that supports 100% of the OKChain features, including accounts, transfers, delegation, and governance. Learn more about `okchaincli` with the [delegator's CLI guide](../delegators/delegator-guide-cli.md).
+`okchaincli` is a command-line interface that lets you interact with the OKChain. `okchaincli` is the only tool that supports 100% of the OKChain features, including accounts, transfers, delegation, and governance. Learn more about `okchaincli` with the [delegator's CLI guide](../delegators/delegators-guide-cli.html).
 
 ## Running a full-node on the OKChain Mainnet
 
-In order to run a full-node for the OKChain mainnet, you must first [install `okchaind`](../okchain-tutorials/installation.md). Then, follow [the guide](../okchain-tutorials/join-mainnet.md).
+In order to run a full-node for the OKChain mainnet, you must first [install `okchaind`](../getting-start/install-okchain.html). Then, follow [the guide](../getting-start/install-okchain.html).
 
-If you are looking to run a validator node, follow the [validator setup guide](../validators/validators-guide-cli.md).
+If you are looking to run a validator node, follow the [validator setup guide](../validators/validators-guide-cli.html).
 
 ## Join the Community
 

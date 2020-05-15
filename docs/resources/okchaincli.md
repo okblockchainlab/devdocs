@@ -6,7 +6,7 @@ order: 1
 
 ## OKChain CLI
 
-`okchaincli` is the tool that enables you to interact with the node that runs on the OKChain network, whether you run it yourself or not. Let us set it up properly. In order to install it, follow the [installation procedure](../okchain-tutorials/installation.md).
+`okchaincli` is the tool that enables you to interact with the node that runs on the OKChain network, whether you run it yourself or not. Let us set it up properly. In order to install it, follow the [installation procedure](../getting-start/install-okchain.html).
 
 ## Setting up okchaincli
 

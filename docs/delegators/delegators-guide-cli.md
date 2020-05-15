@@ -54,7 +54,7 @@ Please exercise extreme caution!
 [**Download the binaries**]
 Not available yet.
 
-[**Install from source**](../okchain-tutorials/installation.md)
+[**Install from source**](../getting-start/install-okchain.html)
 
 ::: tip
 `okchaincli` is used from a terminal. To open the terminal, follow these steps:
