@@ -24,46 +24,20 @@ Do you have OKT tokens? With OKT, you have the superpower to contribute to the s
 
 Learn more about [being a delegator](../delegators/delegators-faq.html), and start participating with one of the following wallets.
 
-## OKChain Wallets
-
-::: warning
-Do your own research and take precautions in regards to wallet security. Neither Tendermint Inc nor the Interchain Foundation is liable if you lose your funds using these third party wallets.
-:::
-
-These community-maintained web and mobile wallets allow you to store & transfer OKT, delegate OKT to validators, and vote on on-chain governance proposals. Note that we do not endorse any of the wallets, they are listed for your convenience.
-
-* [OKTic Wallet](https://OKTicwallet.io/) - Android, Linux, macOS, Windows
-* [Cobo](https://cobo.com/) - Android, iOS
-* [Cosmostation](https://www.cosmostation.io/) - Android, iOS
-* [Huobi Wallet](https://www.huobiwallet.com/) - Android, iOS
-* [imToken](https://token.im/) - Android, iOS
-* [Lunagram](https://lunamint.com/) - Android, iOS
-* [Lunie](https://lunie.io) - Web
-* [Math Wallet](https://www.mathwallet.org/en/) - Android, iOS, Web
-* [Rainbow Wallet](https://www.rainbow.one) - Android, iOS
-* [Qbao Wallet](https://qbao.fund/) - Android, iOS
-* [Trust Wallet](https://trustwallet.com/) Android, iOS
-* [Wetez](https://www.wetez.io/pc/homepage) - Android, iOS
 
 
 ## OKChain Explorers
 
 These block explorers allow you to search, view and analyze OKChain data&mdash;like blocks, transactions, validators, etc.
 
-* [Big Dipper](https://cosmos.bigdipper.live)
-* [OKChain Overview](https://genesislab.net)
-* [Coris](http://coris.network)
-* [OKChain Visualizer](https://nylira.net/3d)
-* [Hubble](https://hubble.figment.network)
-* [LOOK Explorer](https://cosmos.ping.pub)
-* [Mintscan](https://mintscan.io)
-* [Stargazer](https://stargazer.certus.one)
+* [OKlink](https://www.oklink.com)
+
 
 ## OKChain CLI
 
 `okchaincli` is a command-line interface that lets you interact with the OKChain. `okchaincli` is the only tool that supports 100% of the OKChain features, including accounts, transfers, delegation, and governance. Learn more about `okchaincli` with the [delegator's CLI guide](../delegators/delegators-guide-cli.html).
 
-## Running a full-node on the OKChain Mainnet
+## Running a full-node on the OKChain Testnet
 
 In order to run a full-node for the OKChain mainnet, you must first [install `okchaind`](../getting-start/install-okchain.html). Then, follow [the guide](../getting-start/install-okchain.html).
 
@@ -73,9 +47,8 @@ If you are looking to run a validator node, follow the [validator setup guide](.
 
 Have questions, comments, or new ideas? Participate in the OKChain community through one of the following channels. Also check out the [latest events](https://cosmos.network/community).
 
-* [OKChain Community Chat](https://t.me/cosmosproject)
-* [OKChain Developer Chat](https://riot.im/app/#/room/#cosmos:matrix.org)
-* [OKChain Forum](https://forum.cosmos.network)
-* [OKChain on Reddit](https://reddit.com/r/cosmosnetwork)
+* [OKChain Validator Chat](https://t.me/joinchat/HuUCNktBLftzEY1fZPStkw)
+* [OKChain Developer Chat](https://t.me/okchaintech)
 
-To learn more about the OKChain and how it fits within the OKChain Network, visit [cosmos.network](https://cosmos.network).
+
+
