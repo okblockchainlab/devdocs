@@ -6,7 +6,7 @@ order: 1
 
 ## OKChain CLI
 
-`okchaincli` is the tool that enables you to interact with the node that runs on the OKChain network, whether you run it yourself or not. Let us set it up properly. In order to install it, follow the [installation procedure](../okchain-tutorials/installation.md).
+`okchaincli` is the tool that enables you to interact with the node that runs on the OKChain network, whether you run it yourself or not. Let us set it up properly. In order to install it, follow the [installation procedure](../getting-start/install-okchain.html).
 
 ## Setting up okchaincli
 
@@ -322,13 +322,15 @@ okchaincli tx send <addr> <amount> --from <name>
 ```
 
 #### Parameter description
-  
-| **Name** | **Type** |                    **Description**                    |
-  | :------: | :------: | :---------------------------------------------------: |
-  |   addr   |  string  |                  recipient address                   |
-  |  amount  |  string  | transfer amount, covering various cryptocurrencies separated by commas, eg. 1okt, 2bcoin |
-  |   from   |  String  |                      token owner                       |
-  
+
+
+|      Name      |      Type       |            Description             |
+| -------------- | --------------- | ---------------------------------- |
+|     amount     |     string      |    recipient address  |
+| amount |     string      | transfer amount, covering various cryptocurrencies separated by commas, eg. 1okt, 2bcoin |
+|      from      |     string      |     token owner     |
+
+
 #### Example
 
 ```bash
@@ -2292,7 +2294,7 @@ Usage:
     okchaincli query distr community-pool [flags]
 
 Flags：
-	--node ${url}  节点地址
+	--node ${url}  validator address
 ```
 
 ### Query validator commission rewards from delegators
@@ -2672,8 +2674,8 @@ Usage:
     okchaincli tx gov submit-proposal community-pool-spend [proposal-file] [flags]
 
 Flags：
-	--from ${name} 指定命令发送者账户 
-	--node ${url}  节点地址 nodes address 
+	--from ${name} Name or address of private key with which to sign 
+	--node ${url}  validator address 
 ```
 
 ### Query proposal

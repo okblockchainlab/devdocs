@@ -1,6 +1,7 @@
 # DEX Operators Guide (CLI)
 
-在OKChain-OpenDEX中，任何用户都可以发行自己的Token和Tokenpair。
+In OKChain-OpenDEX，any user can issue their own Token and Tokenpairs。
+
 
 ## cli command
 staking cli contains the following 3 commands for DEX operator, providing complete support for equity circulation.
@@ -16,7 +17,7 @@ staking cli contains the following 3 commands for DEX operator, providing comple
 
 ### Issue token
 
-任何用户都可以发行自己的Token，除了按gas收取的系统手续费之外，还会收取一部分OKT作为业务手续费。关于具体费率请参考[Fee Model]().
+Any user can issue their own Token and will be charged a portion of the OKT as a fee in addition to the system fee charged by GAS. Please refer to [Fee Model](../concepts/fee.html) for specific rates.
 
 ```shell
 okchaincli tx token issue --from alice --symbol bcoin --total-supply 200000 --whole-name 'bcoin' --desc 'blockchain coin' -b block --mintable  
@@ -33,7 +34,7 @@ okchaincli tx token issue --from alice --symbol bcoin --total-supply 200000 --wh
 
 ### List a tokenpair
 
-任何用户都可以发行Tokenpair成为DEX operator，在OpenDEX中，任意两个Token都可以组成一个且只能组成一个Tokenpair。
+Any user can issue a token pair to become a DEX operator. In opendex, any two tokens can form one and only one Tokenpair.
 
 ```shell
 okchaincli tx dex list --base-asset tusdk-9a2 --quote-asset tbtc-965 --from mykey -b block -y
@@ -48,7 +49,7 @@ okchaincli tx dex list --base-asset tusdk-9a2 --quote-asset tbtc-965 --from myke
 
 ### Deposit an amount of okt on a tokenpair
 
-为了公平，开放的使用区块链的撮合资源，OpenDEX采用竞价排名的方式分配系统资源，DEX可以通过添加[**数字资产撮合金**]()，使自己交易对的撮合被优先处理。
+In order to make fair and open use of the matching resources of the blockchain,  OpenDex allocates the system resources in the way of competitive ranking. By adding digital asset matching alloy, DEX can prioritize the matching of its own transaction pairs.
 
 
 ```shell
@@ -59,7 +60,7 @@ okchaincli tx dex list --base-asset tusdk-9a2 --quote-asset tbtc-965 --from myke
 
 ### Withdraw an amount of okt from a tokenpair
 
-相对的，DEX operator也可以赎回自己的撮合金，赎回的部分会延迟2周到账。
+In contrast, DEX operator can also withdrawn their product deposits, and the withdrawn part will be back to the operator's account after 2 weeks.
 
 
 ```shell

@@ -122,3 +122,12 @@ Example 7: Market pressure principle. There is no obvious buying or selling pres
 | 5          | 3          | 10.0     |            | 2          | 5        | -3       |
 | 2          |            | 9.8      | 3          | 5          | 5        | 3        |
 | 2          | 2          | 9.4      |            | 5          | 5        | 3        |
+
+## matchmaking priority mechanism
+
+Considering the actual situation, there will much more orders with different products flooding in the block for the fact that every okt holder could list his own token pair on the DEX.
+
+The CPU resource of the node can't afford the full matching for in-block orders during a block time.
+
+The matchmaking priority mechanism confirms the order of product matching by matchmaking deposit. The owner could deposit more okt as matchmaking reserves to his own product to gain a higher matching priority. At the same time, the owner will get all the trade fees from every matched result with his own product as reward.
+  

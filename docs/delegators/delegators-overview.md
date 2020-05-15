@@ -4,11 +4,13 @@
 
 ## Introduction
 
-OKChain是基于Tendermint，它依赖于一组负责提交区块validators。These validators participate in the consensus protocol by broadcasting votes which contain cryptographic signatures signed by each validator's private key.
+OKChain is based on Tendermint and relies on a set of validators who are responsible for submitting blocks. These validators participate in the consensus protocol by broadcasting votes which contain cryptographic signatures signed by each validator's private key.
 
-令牌持有者可以通过“委托”命令获得选票，选出自己认为对于生态有意义的validators，对于这些令牌持有者称之为delegator。
+Token holders can get votes through the "delegation" command, and select the validators that they think are meaningful to the ecology. For these token holders, they are called the delegators.
 
-For a practical guide on how to become a delegator, click [here](./delegator-guide-cli.md).
+
+For a practical guide on how to become a delegator, click [here](./delegator-guide-cli.html).
+
 
 
 
@@ -18,6 +20,47 @@ In OKChain, any user who has staked OKT tokens can vote. Each user is allowed to
 
 OKChain is a liquid, delegative democracy. Users have the option of voting directly for validator, but they can also delegate their voting power to another account to vote on their behalf. The delegate account, called a proxy, has no control over the original user’s account — the user can proxy her vote trustlessly without handing over any keys. The proxy simply has the power to direct that user’s voting power towards certain validators, but the user can revoke her voting power from the proxy at any point.
 
+
+In the proxy voting mechanism, there are two roles:
+* Ordinary voters
+* Proxy voter
+
+### Ordinary voter
+* You can only register as an agent voter by initiating a transaction with a registered agent
+* Only one agent can be selected as a voting agent
+* Established a voting agency relationship with an agent by executing an agent binding transaction
+* Once an agent is selected, all votes in the user account are managed by the agent (vote, not vote, to whom)
+* The number of proxy votes obtained by making up the mortgage and reducing the mortgage will be updated in real time.
+* Dissolve the agency relationship by executing a transaction that cancels the agency relationship
+
+### proxy voter
+* Become an ordinary voter by initiating a specific tx anti-registration
+* You must have a mortgage to register as a proxy voter. Once the proxy voter ’s mortgage is completely unbond, the proxy voter status will be automatically cancelled.
+* Acting voters allow more than one vote
+* Whenever the ordinary user represented by the proxy voter changes the mortgage, that is, all the voting weights of the proxy voter are updated to the latest at the same time. , Updated proxy vote weights for proxy voters
+* The proxy voter cannot reverse check the details of his proxy ticket, only the total proxy ticket can be found
+* When registering as an agent, you can no longer proxy your tickets to others (not multiple agents)
+* When the agent deregisters, the agent ticket on the agent is immediately cleared, and the weight of the voted node is also reduced in real time
+
+## Voting weight
+The weight of the number of votes decayed weekly (0:00 UTC time every Saturday), the total decay period is 1 year, reduced to 50%
+After re-voting, the ballot weights will be refreshed
+formula:
+block_timestamp_epoch = 946684800 (ie 00:00:00 UTC on January 1, 2000)
+weight = int64_t ((now_timestamp-block_timestamp_epoch) / (seconds_per_day * 7)) / double (52)
+last_vote_weight = double (votes) * pow (2, weight)
+The best voting strategy is: update the voting in the hands once a week to ensure that the weight of the votes held is always up to date
+
+## Punishment
+okchain has an automatic penalty mechanism on the chain, which is currently implemented for two types of behavior:
+* When the block node is used as a validator, the block is not signed
+   -In the current testnet, when a total of 9500 block signatures are accumulated, an automatic penalty will be executed
+   -Penalty: Jail validator 600s
+   -The validator cannot participate in the block rotation during Jail
+* When the block node is used as a validator, a double signature is performed on a block
+   -Once a double sign is found in the test network, an automatic penalty will be executed immediately
+   -Penalty: Permanent Jail
+   -The validator cannot participate in the block rotation during Jail
 
 ## Key Management 
 The best way to minimize the risk of theft or loss of OKT is to have a strong storage and backup strategy for your private keys.  The safest way to store your keys is offline,  either in a cryptocurrency wallet or on a device that you never connect to the internet. The best backup strategy for your k yes is to ensure that you have multiple copies of them stored in safe places, and to take specific measures to protect at least one copy of your keys from any kind of natural disaster that is a likely possibility in your part of the world. 

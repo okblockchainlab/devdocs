@@ -14,7 +14,7 @@
 
 ## 2. Reward source
 
-* All transaction related fees ([fee](../fee.md))
+* All transaction related fees ([fee](../../concepts/fee.html))
 * Other fees
     1. **Issuance fee：**amount of okt required to be paid by the project team to issue tokens
     1. **Listing fee：**amount of okt paid by the project team after listing
