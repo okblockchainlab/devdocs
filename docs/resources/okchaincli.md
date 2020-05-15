@@ -323,12 +323,13 @@ okchaincli tx send <addr> <amount> --from <name>
 
 #### Parameter description
   
-| Name | Type |                    Description                    |
-  | -------- | -------- | ---------------------------------------------------- |
-  |   addr   |  string  |                  recipient address                   |
-  |  amount  |  string  | transfer amount, covering various cryptocurrencies separated by commas, eg. 1okt, 2bcoin |
-  |   from   |  String  |                      token owner                       |
-  
+|   Name   |   Type   |                   Description                       |
+| -------- | -------- | --------------------------------------------------- |
+|   addr   |  string  |                  recipient address                  |
+|  amount  |  string  | transfer amount, covering various cryptocurrencies separated by commas, eg. 1okt, 2bcoin |
+|   from   |  String  |                    token owner                      |
+
+
 #### Example
 
 ```bash
