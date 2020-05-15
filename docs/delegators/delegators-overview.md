@@ -4,11 +4,13 @@
 
 ## Introduction
 
-OKChain是基于Tendermint，它依赖于一组负责提交区块validators。These validators participate in the consensus protocol by broadcasting votes which contain cryptographic signatures signed by each validator's private key.
+OKChain is based on Tendermint and relies on a set of validators who are responsible for submitting blocks. These validators participate in the consensus protocol by broadcasting votes which contain cryptographic signatures signed by each validator's private key.
 
-令牌持有者可以通过“委托”命令获得选票，选出自己认为对于生态有意义的validators，对于这些令牌持有者称之为delegator。
+Token holders can get votes through the "delegation" command, and select the validators that they think are meaningful to the ecology. For these token holders, they are called the delegators.
 
-For a practical guide on how to become a delegator, click [here](./delegator-guide-cli.md).
+
+For a practical guide on how to become a delegator, click [here](./delegator-guide-cli.html).
+
 
 
 

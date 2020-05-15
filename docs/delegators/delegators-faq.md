@@ -7,21 +7,22 @@ order: 2
 
 ## What is a delegators?
 
-令牌持有者可以通过“委托”命令获得选票，选出自己认为对于生态有意义的validators，对于这些令牌持有者称之为delegator。
+Token holders can get votes through the "delegation" command, and select the validators that they think are meaningful to the ecology. For these token holders, they are called the delegators.
 
 Delegators play a critical role in the system, as they are responsible for choosing validators. Being a delegator is not a passive role: Delegators should actively monitor the actions of their validators and participate in governance. 
 
 ## Motive for voting
 
-投票是令牌持有者参与链上治理的最主要方式。谁将成为网络的validators。您希望validator的人员在技术上非常称职，因为如果链条上发生了什么事情-出现了一些错误，或者出现了新功能，validators将决定网络的运行方向，他们需要非常专业并且知道他们在做什么。
+Voting is the primary way for token holders participate in the on-chain governance . Who will be the validators of the network. You want the validators to be very technically competent, because if something happens on the chain - something goes wrong, or a new feature appears, the validators will determine the direction of the network, and they need to be very professional and know what they are doing.
 
-另一方面是社区生态方面。validators需要一起工作。如果有任何问题，则需要将他们放进一个房间。他们需要能够共同努力，成为社区的好领导人，并传播信息，保持高度透明。
+On the other hand is the community ecology aspect. validators need to work together. If there are any problems, then they need to be put in a room. They need to be able to work together to be good leaders in their communities and to spread the word and be highly transparent.
 
-您将选择将自己是否成为OKChain的Delegators。因此，请进行认真的投票，因为该链的未来取决于那些投票以及谁来管理它。
+You will choose whether to become a delegator of okchain. So please vote seriously, because the future of the chain depends on those votes and who will manage it.
+
 
 ## Choosing a validator
 
-In order to choose their validators, delegators have access to a range of information directly in [Lunie](https://lunie.io) or other OKChain block explorers.
+In order to choose their validators, delegators have access to a range of information directly in [OKLink](https://www.oklink.com/okchain-test) or other OKChain block explorers.
 
 - **Validator's moniker**: Name of the validator candidate.
 - **Validator's description**: Description provided by the validator operator.
