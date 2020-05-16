@@ -27,7 +27,7 @@ scenario application interconnectivity of blockchain can be realized
 simply and efficiently, so that we can co-construct the ecosystem and
 the value-added system.
 
-.. figure:: ../img/multi-chain.jpg
+.. figure:: ./img/multi-chain.jpg
    :alt: okchain multi-chain
 
    okchain multi-chain
@@ -48,7 +48,7 @@ the separation of technology and operations. Just as Ethereum makes
 digital asset issuance easy through smart contract technology, OKChain
 lowers the barrier for operating digital asset trading pairs by OpenDEX.
 
-.. figure:: ../img/operators.jpg
+.. figure:: ./img/operators.jpg
    :alt: OpenDEX multi-operator relation
 
    OpenDEX multi-operator relation
